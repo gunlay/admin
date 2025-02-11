@@ -26,8 +26,8 @@
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary">查询</el-button>
-              <el-button>重置</el-button>
+              <el-button type="primary" @click="handleSearch">查询</el-button>
+              <el-button @click="handleReset">重置</el-button>
             </el-form-item>
           </el-form>
         </template>
@@ -228,6 +228,67 @@ const handleSubmit = () => {
   // 这里添加提交逻辑
   ElMessage.success('更新成功')
   dialogVisible.value = false
+}
+
+// 添加一个原始数据的引用
+const originalUserList = [
+  {
+    id: 1,
+    name: '张三',
+    phone: '18812342349',
+    role: '大学生',
+    createTime: '2025.01.02 12:23:45',
+    authStatus: '',
+    status: '正常'
+  },
+  {
+    id: 2,
+    name: '李四',
+    phone: '13412349874',
+    role: '程序员',
+    createTime: '2025.01.05 12:23:45',
+    authStatus: '已认证',
+    status: '已封禁 剩余30天'
+  },
+  {
+    id: 3,
+    name: '王五',
+    phone: '13412349872',
+    role: '程序员',
+    createTime: '2025.01.08 12:23:45',
+    authStatus: '未认证',
+    status: '已注销'
+  }
+]
+
+// 修改查询功能
+const handleSearch = () => {
+  // 每次都基于原始数据进行过滤
+  const filteredList = originalUserList.filter(user => {
+    const matchUsername = searchForm.username ? user.name.includes(searchForm.username) : true
+    const matchPhone = searchForm.phone ? user.phone.includes(searchForm.phone) : true
+    const matchRole = searchForm.role === '全部' ? true : user.role === searchForm.role
+    const matchAuthStatus = searchForm.authStatus === '全部' ? true : user.authStatus === searchForm.authStatus
+    
+    return matchUsername && matchPhone && matchRole && matchAuthStatus
+  })
+  
+  userList.value = filteredList
+  ElMessage.success('查询成功')
+}
+
+// 修改重置功能
+const handleReset = () => {
+  // 重置表单
+  searchForm.username = ''
+  searchForm.phone = ''
+  searchForm.role = '全部'
+  searchForm.authStatus = '全部'
+  
+  // 重置数据为初始状态
+  userList.value = [...originalUserList]
+  
+  ElMessage.success('重置成功')
 }
 </script>
 
