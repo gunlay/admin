@@ -20,7 +20,7 @@
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary">查询</el-button>
+              <el-button type="primary" @click="handleSearch">查询</el-button>
               <el-button @click="handleReset">重置</el-button>
             </el-form-item>
           </el-form>
@@ -100,7 +100,8 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(100)
 
-const orderList = ref([
+// 添加一个原始数据的引用
+const originalOrderList = [
   {
     orderNo: 'DD20250102001',
     payerName: '张三',
@@ -134,7 +135,9 @@ const orderList = ref([
     amount: 199,
     receiveTime: '2025.01.08 12:23:45'
   }
-])
+]
+
+const orderList = ref([...originalOrderList])
 
 // 手机号中间4位隐藏处理
 const formatPhone = (phone: string) => {
@@ -157,11 +160,34 @@ const handleView = (row: any) => {
   console.log('查看详情:', row)
 }
 
-// 重置功能
+// 修改查询功能
+const handleSearch = () => {
+  // 每次都基于原始数据进行过滤
+  const filteredList = originalOrderList.filter(order => {
+    const matchUsername = searchForm.username ? 
+      (order.payerName.includes(searchForm.username) || order.receiverName.includes(searchForm.username)) : true
+    const matchPhone = searchForm.phone ? 
+      (order.payerPhone.includes(searchForm.phone) || order.receiverPhone.includes(searchForm.phone)) : true
+    const matchStatus = searchForm.status === '全部' ? true : order.status === searchForm.status
+    
+    return matchUsername && matchPhone && matchStatus
+  })
+  
+  orderList.value = filteredList
+  ElMessage.success('查询成功')
+}
+
+// 修改重置功能
 const handleReset = () => {
+  // 重置表单
   searchForm.username = ''
   searchForm.phone = ''
   searchForm.status = '全部'
+  
+  // 重置数据为初始状态
+  orderList.value = [...originalOrderList]
+  
+  ElMessage.success('重置成功')
 }
 </script>
 

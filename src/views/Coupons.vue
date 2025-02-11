@@ -25,7 +25,7 @@
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary">查询</el-button>
+              <el-button type="primary" @click="handleSearch">查询</el-button>
               <el-button @click="handleReset">重置</el-button>
             </el-form-item>
           </el-form>
@@ -87,7 +87,8 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(100)
 
-const couponList = ref([
+// 添加一个原始数据的引用
+const originalCouponList = [
   {
     code: 'XRJ20250102',
     name: '新注册用户券',
@@ -124,7 +125,9 @@ const couponList = ref([
     createTime: '2025.01.08 12:23:45',
     status: '已下线'
   }
-])
+]
+
+const couponList = ref([...originalCouponList])
 
 // 获取状态标签类型
 const getStatusType = (status: string) => {
@@ -142,11 +145,32 @@ const handleView = (row: any) => {
   console.log('查看详情:', row)
 }
 
-// 重置功能
+// 修改查询功能
+const handleSearch = () => {
+  // 每次都基于原始数据进行过滤
+  const filteredList = originalCouponList.filter(coupon => {
+    const matchName = searchForm.name ? coupon.name.includes(searchForm.name) : true
+    const matchType = searchForm.type === '全部' ? true : coupon.type === searchForm.type
+    const matchStatus = searchForm.status === '全部' ? true : coupon.status === searchForm.status
+    
+    return matchName && matchType && matchStatus
+  })
+  
+  couponList.value = filteredList
+  ElMessage.success('查询成功')
+}
+
+// 修改重置功能
 const handleReset = () => {
+  // 重置表单
   searchForm.name = ''
   searchForm.type = '全部'
   searchForm.status = '全部'
+  
+  // 重置数据为初始状态
+  couponList.value = [...originalCouponList]
+  
+  ElMessage.success('重置成功')
 }
 </script>
 

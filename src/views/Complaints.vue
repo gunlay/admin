@@ -19,7 +19,7 @@
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary">查询</el-button>
+              <el-button type="primary" @click="handleSearch">查询</el-button>
               <el-button @click="handleReset">重置</el-button>
             </el-form-item>
           </el-form>
@@ -91,7 +91,8 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(100)
 
-const complaintList = ref([
+// 添加一个原始数据的引用
+const originalComplaintList = [
   {
     id: 'TS20250102001',
     complainant: '张三',
@@ -125,7 +126,9 @@ const complaintList = ref([
     materials: '查看',
     status: '处理中'
   }
-])
+]
+
+const complaintList = ref([...originalComplaintList])
 
 // 手机号中间4位隐藏处理
 const formatPhone = (phone: string) => {
@@ -147,11 +150,34 @@ const handleView = (row: any) => {
   console.log('查看详情:', row)
 }
 
-// 重置功能
+// 修改查询功能
+const handleSearch = () => {
+  // 每次都基于原始数据进行过滤
+  const filteredList = originalComplaintList.filter(complaint => {
+    const matchUsername = searchForm.username ? 
+      (complaint.complainant.includes(searchForm.username) || complaint.defendant.includes(searchForm.username)) : true
+    const matchPhone = searchForm.phone ? 
+      (complaint.phone.includes(searchForm.phone) || complaint.defendantPhone.includes(searchForm.phone)) : true
+    const matchStatus = searchForm.status === '全部' ? true : complaint.status === searchForm.status
+    
+    return matchUsername && matchPhone && matchStatus
+  })
+  
+  complaintList.value = filteredList
+  ElMessage.success('查询成功')
+}
+
+// 修改重置功能
 const handleReset = () => {
+  // 重置表单
   searchForm.username = ''
   searchForm.phone = ''
   searchForm.status = '全部'
+  
+  // 重置数据为初始状态
+  complaintList.value = [...originalComplaintList]
+  
+  ElMessage.success('重置成功')
 }
 </script>
 

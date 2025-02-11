@@ -12,7 +12,7 @@
               <el-input v-model="searchForm.code" placeholder="请输入渠道码" />
             </el-form-item>
             <el-form-item>
-              <el-button type="primary">查询</el-button>
+              <el-button type="primary" @click="handleSearch">查询</el-button>
               <el-button @click="handleReset">重置</el-button>
             </el-form-item>
           </el-form>
@@ -67,7 +67,8 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(100)
 
-const channelList = ref([
+// 添加一个原始数据的引用
+const originalChannelList = [
   {
     id: 1,
     name: 'A',
@@ -95,17 +96,39 @@ const channelList = ref([
     totalUsers: 128,
     yesterdayUsers: 45
   }
-])
+]
+
+const channelList = ref([...originalChannelList])
 
 // 查看详情
 const handleView = (row: any) => {
   console.log('查看详情:', row)
 }
 
-// 重置功能
+// 修改查询功能
+const handleSearch = () => {
+  // 每次都基于原始数据进行过滤
+  const filteredList = originalChannelList.filter(channel => {
+    const matchName = searchForm.name ? channel.name.includes(searchForm.name) : true
+    const matchCode = searchForm.code ? channel.code.includes(searchForm.code) : true
+    
+    return matchName && matchCode
+  })
+  
+  channelList.value = filteredList
+  ElMessage.success('查询成功')
+}
+
+// 修改重置功能
 const handleReset = () => {
+  // 重置表单
   searchForm.name = ''
   searchForm.code = ''
+  
+  // 重置数据为初始状态
+  channelList.value = [...originalChannelList]
+  
+  ElMessage.success('重置成功')
 }
 </script>
 

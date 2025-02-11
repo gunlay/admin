@@ -27,7 +27,7 @@
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary">查询</el-button>
+              <el-button type="primary" @click="handleSearch">查询</el-button>
               <el-button @click="handleReset">重置</el-button>
             </el-form-item>
           </el-form>
@@ -204,12 +204,62 @@ const searchForm = reactive({
   status: '全部'
 })
 
-// 添加重置功能
+// 添加一个原始数据的引用
+const originalAuthList = [
+  {
+    id: 1,
+    name: '张三',
+    phone: '18812342349',
+    authType: '工作认证',
+    status: '已通过',
+    authTime: '2025.01.02 12:23:45'
+  },
+  {
+    id: 2,
+    name: '李四',
+    phone: '13412349874',
+    authType: '技能认证',
+    status: '未审核',
+    authTime: '2025.01.05 12:23:45'
+  },
+  {
+    id: 3,
+    name: '王五',
+    phone: '13412349872',
+    authType: '技能认证',
+    status: '已拒绝',
+    authTime: '2025.01.08 12:23:45'
+  }
+]
+
+// 修改查询功能
+const handleSearch = () => {
+  // 每次都基于原始数据进行过滤
+  const filteredList = originalAuthList.filter(auth => {
+    const matchUsername = searchForm.username ? auth.name.includes(searchForm.username) : true
+    const matchPhone = searchForm.phone ? auth.phone.includes(searchForm.phone) : true
+    const matchAuthType = searchForm.authType === '全部' ? true : auth.authType === searchForm.authType
+    const matchStatus = searchForm.status === '全部' ? true : auth.status === searchForm.status
+    
+    return matchUsername && matchPhone && matchAuthType && matchStatus
+  })
+  
+  authList.value = filteredList
+  ElMessage.success('查询成功')
+}
+
+// 修改重置功能
 const handleReset = () => {
+  // 重置表单
   searchForm.username = ''
   searchForm.phone = ''
   searchForm.authType = '全部'
   searchForm.status = '全部'
+  
+  // 重置数据为初始状态
+  authList.value = [...originalAuthList]
+  
+  ElMessage.success('重置成功')
 }
 </script>
 
