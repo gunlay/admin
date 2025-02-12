@@ -77,39 +77,41 @@
       <!-- 查看详情对话框 -->
       <el-dialog
         v-model="dialogVisible"
-        title="认证详情"
+        title="认证信息详情"
         width="500px"
       >
-        <el-form :model="detailForm" label-width="100px">
-          <el-form-item label="用户昵称">
-            <div>{{ detailForm.name }}</div>
+        <el-form :model="formData" label-width="100px">
+          <el-form-item label="用户名">
+            <span>{{ formData.username }}</span>
           </el-form-item>
-          <el-form-item label="手机号">
-            <div>{{ formatPhone(detailForm.phone) }}</div>
-          </el-form-item>
-          <el-form-item label="认证类别">
-            <div>{{ detailForm.authType }}</div>
+          <el-form-item label="认证类型">
+            <span>{{ formData.type }}</span>
           </el-form-item>
           <el-form-item label="认证材料">
-            <!-- 这里可以添加认证材料的展示，如图片等 -->
+            <el-image
+              v-if="formData.materials"
+              :src="formData.materials"
+              :preview-src-list="[formData.materials]"
+              fit="cover"
+              class="auth-image"
+            />
           </el-form-item>
-          <el-form-item label="审核状态" v-if="detailForm.status === '未审核'">
-            <el-radio-group v-model="detailForm.auditResult">
-              <el-radio label="通过">通过</el-radio>
-              <el-radio label="拒绝">拒绝</el-radio>
-            </el-radio-group>
+          <el-form-item label="申请时间">
+            <span>{{ formData.applyTime }}</span>
+          </el-form-item>
+          <el-form-item label="审核状态">
+            <el-tag :type="getStatusType(formData.status)">
+              {{ formData.status }}
+            </el-tag>
           </el-form-item>
         </el-form>
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="dialogVisible = false">关闭</el-button>
-            <el-button 
-              v-if="detailForm.status === '未审核'"
-              type="primary" 
-              @click="handleAudit"
-            >
-              确认
-            </el-button>
+            <template v-if="formData.status === '未审核'">
+              <el-button type="success" @click="handleAudit('通过')">通过</el-button>
+              <el-button type="danger" @click="handleAudit('拒绝')">拒绝</el-button>
+            </template>
           </span>
         </template>
       </el-dialog>
@@ -119,7 +121,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
-import { ElMessage, ElConfigProvider } from 'element-plus'
+import { ElMessage, ElMessageBox, ElConfigProvider } from 'element-plus'
 import { locale } from '../config/element-plus'
 
 const currentPage = ref(1)
@@ -163,13 +165,13 @@ const authList = ref([
 ])
 
 const dialogVisible = ref(false)
-const detailForm = reactive({
+const formData = reactive({
   id: '',
-  name: '',
-  phone: '',
-  authType: '',
-  status: '',
-  auditResult: ''
+  username: '',
+  type: '',
+  materials: '',
+  applyTime: '',
+  status: ''
 })
 
 // 手机号中间4位隐藏处理
@@ -190,19 +192,47 @@ const getStatusType = (status: string) => {
 
 // 查看详情
 const handleView = (row: any) => {
-  Object.assign(detailForm, row)
+  formData.id = row.id
+  formData.username = row.name
+  formData.type = row.authType
+  formData.materials = row.materials || '' // 如果暂时没有材料，使用空字符串
+  formData.applyTime = row.authTime
+  formData.status = row.status
   dialogVisible.value = true
 }
 
-// 提交审核
-const handleAudit = () => {
-  if (!detailForm.auditResult) {
-    ElMessage.warning('请选择审核结果')
-    return
-  }
-  
-  ElMessage.success('审核提交成功')
-  dialogVisible.value = false
+// 修改审核处理方法，添加类型定义
+const handleAudit = (action: '通过' | '拒绝') => {
+  ElMessageBox.confirm(
+    `确定要${action}该用户的认证申请吗？`,
+    '提示',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: action === '通过' ? 'success' : 'warning'
+    }
+  ).then(() => {
+    // 更新状态
+    const newStatus = action === '通过' ? '已通过' : '已拒绝'
+    formData.status = newStatus
+    
+    // 同步更新列表中的数据
+    const record = authList.value.find(item => item.id === formData.id)
+    if (record) {
+      record.status = newStatus
+      record.authTime = new Date().toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }).replace(/\//g, '.')
+    }
+    
+    ElMessage.success(`审核${action}成功`)
+    dialogVisible.value = false
+  })
 }
 
 // 添加搜索表单数据
@@ -304,5 +334,11 @@ const handleReset = () => {
 
 :deep(.el-input__wrapper) {
   background-color: var(--el-fill-color-blank);
+}
+
+.auth-image {
+  width: 200px;
+  height: 150px;
+  border-radius: 4px;
 }
 </style> 
