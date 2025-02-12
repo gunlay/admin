@@ -25,7 +25,7 @@
           </el-form>
         </template>
 
-        <el-table :data="complaintList" style="width: 100%">
+        <el-table :data="displayComplaintList" style="width: 100%">
           <el-table-column prop="id" label="投诉编号" width="120" />
           <el-table-column prop="complainant" label="投诉人" width="100" />
           <el-table-column label="手机号" width="120">
@@ -77,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { ElMessage, ElConfigProvider } from 'element-plus'
 import { locale } from '../config/element-plus'
 
@@ -89,7 +89,15 @@ const searchForm = reactive({
 
 const currentPage = ref(1)
 const pageSize = ref(10)
-const total = ref(100)
+// 计算总条数
+const total = computed(() => originalComplaintList.length)
+
+// 计算当前页显示的数据
+const displayComplaintList = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return complaintList.value.slice(start, end)
+})
 
 // 修改初始列表数据，按投诉时间倒序排列
 const complaintList = ref([
@@ -185,7 +193,7 @@ const handleView = (row: any) => {
   console.log('查看详情:', row)
 }
 
-// 修改查询功能
+// 修改查询功能，保持排序和分页
 const handleSearch = () => {
   // 每次都基于原始数据进行过滤
   const filteredList = originalComplaintList.filter(complaint => {
@@ -199,6 +207,8 @@ const handleSearch = () => {
   })
   
   complaintList.value = filteredList
+  // 重置到第一页
+  currentPage.value = 1
   ElMessage.success('查询成功')
 }
 
@@ -211,6 +221,8 @@ const handleReset = () => {
   
   // 重置数据为初始状态
   complaintList.value = [...originalComplaintList]
+  // 重置到第一页
+  currentPage.value = 1
   
   ElMessage.success('重置成功')
 }

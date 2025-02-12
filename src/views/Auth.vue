@@ -33,7 +33,7 @@
           </el-form>
         </template>
 
-        <el-table :data="authList" style="width: 100%">
+        <el-table :data="displayAuthList" style="width: 100%">
           <el-table-column prop="id" label="id" width="100" />
           <el-table-column prop="name" label="用户名" width="120" />
           <el-table-column label="手机号" width="120">
@@ -118,13 +118,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { ElMessage, ElConfigProvider } from 'element-plus'
 import { locale } from '../config/element-plus'
 
 const currentPage = ref(1)
 const pageSize = ref(10)
-const total = ref(100)
+// 计算总条数
+const total = computed(() => originalAuthList.length)
+
+// 计算当前页显示的数据
+const displayAuthList = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return authList.value.slice(start, end)
+})
 
 // 修改初始列表数据，按审核时间倒序排列
 const authList = ref([
@@ -233,7 +241,7 @@ const originalAuthList = [
   }
 ]
 
-// 修改查询功能
+// 修改查询功能，保持排序和分页
 const handleSearch = () => {
   // 每次都基于原始数据进行过滤
   const filteredList = originalAuthList.filter(auth => {
@@ -246,6 +254,8 @@ const handleSearch = () => {
   })
   
   authList.value = filteredList
+  // 重置到第一页
+  currentPage.value = 1
   ElMessage.success('查询成功')
 }
 
@@ -259,6 +269,8 @@ const handleReset = () => {
   
   // 重置数据为初始状态
   authList.value = [...originalAuthList]
+  // 重置到第一页
+  currentPage.value = 1
   
   ElMessage.success('重置成功')
 }

@@ -26,7 +26,7 @@
           </el-form>
         </template>
 
-        <el-table :data="orderList" style="width: 100%">
+        <el-table :data="displayOrderList" style="width: 100%">
           <el-table-column prop="orderNo" label="订单号" width="120" />
           <el-table-column prop="payerName" label="付款人" width="100" />
           <el-table-column label="手机号" width="120">
@@ -86,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { ElMessage, ElConfigProvider } from 'element-plus'
 import { locale } from '../config/element-plus'
 
@@ -98,7 +98,15 @@ const searchForm = reactive({
 
 const currentPage = ref(1)
 const pageSize = ref(10)
-const total = ref(100)
+// 计算总条数
+const total = computed(() => originalOrderList.length)
+
+// 计算当前页显示的数据
+const displayOrderList = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return orderList.value.slice(start, end)
+})
 
 // 修改初始列表数据，按下单时间倒序排列
 const orderList = ref([
@@ -195,7 +203,7 @@ const handleView = (row: any) => {
   console.log('查看详情:', row)
 }
 
-// 修改查询功能
+// 修改查询功能，保持排序和分页
 const handleSearch = () => {
   // 每次都基于原始数据进行过滤
   const filteredList = originalOrderList.filter(order => {
@@ -209,6 +217,8 @@ const handleSearch = () => {
   })
   
   orderList.value = filteredList
+  // 重置到第一页
+  currentPage.value = 1
   ElMessage.success('查询成功')
 }
 
@@ -221,6 +231,8 @@ const handleReset = () => {
   
   // 重置数据为初始状态
   orderList.value = [...originalOrderList]
+  // 重置到第一页
+  currentPage.value = 1
   
   ElMessage.success('重置成功')
 }

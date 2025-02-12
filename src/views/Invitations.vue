@@ -18,7 +18,7 @@
           </el-form>
         </template>
 
-        <el-table :data="channelList" style="width: 100%">
+        <el-table :data="displayChannelList" style="width: 100%">
           <el-table-column prop="id" label="渠道id" width="100" />
           <el-table-column prop="name" label="渠道名称" width="120" />
           <el-table-column prop="code" label="渠道码" width="120" />
@@ -54,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { ElMessage, ElConfigProvider } from 'element-plus'
 import { locale } from '../config/element-plus'
 
@@ -65,7 +65,15 @@ const searchForm = reactive({
 
 const currentPage = ref(1)
 const pageSize = ref(10)
-const total = ref(100)
+// 计算总条数
+const total = computed(() => originalChannelList.length)
+
+// 计算当前页显示的数据
+const displayChannelList = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return channelList.value.slice(start, end)
+})
 
 // 修改初始列表数据，按创建时间倒序排列
 const channelList = ref([
@@ -134,7 +142,7 @@ const handleView = (row: any) => {
   console.log('查看详情:', row)
 }
 
-// 修改查询功能
+// 修改查询功能，保持排序和分页
 const handleSearch = () => {
   // 每次都基于原始数据进行过滤
   const filteredList = originalChannelList.filter(channel => {
@@ -145,6 +153,8 @@ const handleSearch = () => {
   })
   
   channelList.value = filteredList
+  // 重置到第一页
+  currentPage.value = 1
   ElMessage.success('查询成功')
 }
 
@@ -156,6 +166,8 @@ const handleReset = () => {
   
   // 重置数据为初始状态
   channelList.value = [...originalChannelList]
+  // 重置到第一页
+  currentPage.value = 1
   
   ElMessage.success('重置成功')
 }

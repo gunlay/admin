@@ -32,7 +32,7 @@
           </el-form>
         </template>
 
-        <el-table :data="userList" style="width: 100%">
+        <el-table :data="displayUserList" style="width: 100%">
           <el-table-column prop="id" label="id" width="80" />
           <el-table-column prop="name" label="用户名" width="120" />
           <el-table-column label="手机号" width="120">
@@ -115,7 +115,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { ElMessage, ElMessageBox, ElConfigProvider } from 'element-plus'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 
@@ -128,7 +128,14 @@ const searchForm = reactive({
 
 const currentPage = ref(1)
 const pageSize = ref(10)
-const total = ref(100)
+const total = computed(() => originalUserList.length)
+
+// 计算当前页显示的数据
+const displayUserList = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return userList.value.slice(start, end)
+})
 
 // 修改初始列表数据，按注册时间倒序排列
 const userList = ref([
@@ -262,7 +269,7 @@ const originalUserList = [
   }
 ]
 
-// 修改查询功能，保持排序
+// 修改查询功能，保持排序和分页
 const handleSearch = () => {
   // 每次都基于原始数据进行过滤
   const filteredList = originalUserList.filter(user => {
@@ -275,6 +282,8 @@ const handleSearch = () => {
   })
   
   userList.value = filteredList
+  // 重置到第一页
+  currentPage.value = 1
   ElMessage.success('查询成功')
 }
 
@@ -288,6 +297,8 @@ const handleReset = () => {
   
   // 重置数据为初始状态
   userList.value = [...originalUserList]
+  // 重置到第一页
+  currentPage.value = 1
   
   ElMessage.success('重置成功')
 }
