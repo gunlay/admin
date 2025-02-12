@@ -110,6 +110,35 @@
           </span>
         </template>
       </el-dialog>
+
+      <!-- 禁用用户对话框 -->
+      <el-dialog
+        v-model="disableDialogVisible"
+        title="禁用用户"
+        width="30%"
+      >
+        <div class="disable-dialog-content">
+          <p>确定要禁用该用户吗？</p>
+          <el-form :model="disableForm">
+            <el-form-item label="禁用时长">
+              <el-input-number 
+                v-model="disableForm.duration" 
+                :min="1"
+                :max="365"
+                placeholder="请输入禁用天数"
+              >
+                <template #suffix>天</template>
+              </el-input-number>
+            </el-form-item>
+          </el-form>
+        </div>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="disableDialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="confirmDisable">确定</el-button>
+          </span>
+        </template>
+      </el-dialog>
     </div>
   </el-config-provider>
 </template>
@@ -169,11 +198,18 @@ const userList = ref([
 ])
 
 const dialogVisible = ref(false)
+const disableDialogVisible = ref(false)
+const currentUser = ref(null)
 const formData = reactive({
   id: '',
   name: '',
   phone: '',
   status: ''
+})
+
+// 添加禁用表单数据
+const disableForm = ref({
+  duration: 7 // 默认禁用7天
 })
 
 // 自定义国际化配置
@@ -217,19 +253,25 @@ const handleEdit = (row: any) => {
 }
 
 const handleStatusChange = (row: any) => {
-  const action = row.status === '正常' ? '禁用' : '启用'
-  ElMessageBox.confirm(
-    `确定要${action}该用户吗？`,
-    '提示',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }
-  ).then(() => {
-    row.status = row.status === '正常' ? '禁用' : '正常'
-    ElMessage.success(`${action}成功`)
-  })
+  currentUser.value = row
+  if (row.status === '正常') {
+    // 如果是禁用操作，显示禁用对话框
+    disableDialogVisible.value = true
+  } else {
+    // 如果是启用操作，直接确认
+    ElMessageBox.confirm(
+      '确定要启用该用户吗？',
+      '提示',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    ).then(() => {
+      row.status = '正常'
+      ElMessage.success('启用成功')
+    })
+  }
 }
 
 const handleSubmit = () => {
@@ -302,6 +344,28 @@ const handleReset = () => {
   
   ElMessage.success('重置成功')
 }
+
+// 修改确认禁用方法
+const confirmDisable = () => {
+  if (!currentUser.value) return
+  
+  currentUser.value.status = `已封禁 剩余${disableForm.value.duration}天`
+  ElMessage.success('禁用成功')
+  disableDialogVisible.value = false
+  
+  // 如果有实际的 API 调用，可以使用下面的代码
+  // try {
+  //   await userApi.disableUser({
+  //     userId: currentUser.value.id,
+  //     duration: disableForm.value.duration
+  //   })
+  //   ElMessage.success('用户已禁用')
+  //   disableDialogVisible.value = false
+  //   fetchUserList() // 刷新用户列表
+  // } catch (error) {
+  //   ElMessage.error('禁用用户失败')
+  // }
+}
 </script>
 
 <style scoped>
@@ -350,5 +414,9 @@ const handleReset = () => {
   &::after {
     content: "条/页";
   }
+}
+
+.disable-dialog-content {
+  padding: 20px 0;
 }
 </style> 
