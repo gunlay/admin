@@ -91,18 +91,18 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(100)
 
-// 添加一个原始数据的引用
-const originalComplaintList = [
+// 修改初始列表数据，按投诉时间倒序排列
+const complaintList = ref([
   {
-    id: 'TS20250102001',
-    complainant: '张三',
-    phone: '18812342349',
-    defendant: '王五',
-    defendantPhone: '18812342349',
-    createTime: '2025.01.02 12:23:45',
+    id: 'TS20250108001',
+    complainant: '王五',
+    phone: '13412349872',
+    defendant: '李四',
+    defendantPhone: '13412349872',
+    createTime: '2025.01.08 12:23:45',
     type: '服务投诉',
     materials: '查看',
-    status: '已解决'
+    status: '处理中'
   },
   {
     id: 'TS20250105001',
@@ -116,6 +116,21 @@ const originalComplaintList = [
     status: '处理中'
   },
   {
+    id: 'TS20250102001',
+    complainant: '张三',
+    phone: '18812342349',
+    defendant: '王五',
+    defendantPhone: '18812342349',
+    createTime: '2025.01.02 12:23:45',
+    type: '服务投诉',
+    materials: '查看',
+    status: '已解决'
+  }
+])
+
+// originalComplaintList 的定义也保持按时间倒序
+const originalComplaintList = [
+  {
     id: 'TS20250108001',
     complainant: '王五',
     phone: '13412349872',
@@ -125,10 +140,30 @@ const originalComplaintList = [
     type: '服务投诉',
     materials: '查看',
     status: '处理中'
+  },
+  {
+    id: 'TS20250105001',
+    complainant: '李四',
+    phone: '13412349874',
+    defendant: '张三',
+    defendantPhone: '13412349874',
+    createTime: '2025.01.05 12:23:45',
+    type: '商品投诉',
+    materials: '查看',
+    status: '处理中'
+  },
+  {
+    id: 'TS20250102001',
+    complainant: '张三',
+    phone: '18812342349',
+    defendant: '王五',
+    defendantPhone: '18812342349',
+    createTime: '2025.01.02 12:23:45',
+    type: '服务投诉',
+    materials: '查看',
+    status: '已解决'
   }
 ]
-
-const complaintList = ref([...originalComplaintList])
 
 // 手机号中间4位隐藏处理
 const formatPhone = (phone: string) => {

@@ -130,15 +130,16 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(100)
 
+// 修改初始列表数据，按注册时间倒序排列
 const userList = ref([
   {
-    id: 1,
-    name: '张三',
-    phone: '18812342349',
-    role: '大学生',
-    createTime: '2025.01.02 12:23:45',
-    authStatus: '',
-    status: '正常'
+    id: 3,
+    name: '王五',
+    phone: '13412349872',
+    role: '程序员',
+    createTime: '2025.01.08 12:23:45',
+    authStatus: '未认证',
+    status: '已注销'
   },
   {
     id: 2,
@@ -150,13 +151,13 @@ const userList = ref([
     status: '已封禁 剩余30天'
   },
   {
-    id: 3,
-    name: '王五',
-    phone: '13412349872',
-    role: '程序员',
-    createTime: '2025.01.08 12:23:45',
-    authStatus: '未认证',
-    status: '已注销'
+    id: 1,
+    name: '张三',
+    phone: '18812342349',
+    role: '大学生',
+    createTime: '2025.01.02 12:23:45',
+    authStatus: '',
+    status: '正常'
   }
 ])
 
@@ -230,16 +231,16 @@ const handleSubmit = () => {
   dialogVisible.value = false
 }
 
-// 添加一个原始数据的引用
+// originalUserList 的定义也保持按时间倒序
 const originalUserList = [
   {
-    id: 1,
-    name: '张三',
-    phone: '18812342349',
-    role: '大学生',
-    createTime: '2025.01.02 12:23:45',
-    authStatus: '',
-    status: '正常'
+    id: 3,
+    name: '王五',
+    phone: '13412349872',
+    role: '程序员',
+    createTime: '2025.01.08 12:23:45',
+    authStatus: '未认证',
+    status: '已注销'
   },
   {
     id: 2,
@@ -251,17 +252,17 @@ const originalUserList = [
     status: '已封禁 剩余30天'
   },
   {
-    id: 3,
-    name: '王五',
-    phone: '13412349872',
-    role: '程序员',
-    createTime: '2025.01.08 12:23:45',
-    authStatus: '未认证',
-    status: '已注销'
+    id: 1,
+    name: '张三',
+    phone: '18812342349',
+    role: '大学生',
+    createTime: '2025.01.02 12:23:45',
+    authStatus: '',
+    status: '正常'
   }
 ]
 
-// 修改查询功能
+// 修改查询功能，保持排序
 const handleSearch = () => {
   // 每次都基于原始数据进行过滤
   const filteredList = originalUserList.filter(user => {

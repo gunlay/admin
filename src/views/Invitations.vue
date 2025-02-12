@@ -67,16 +67,16 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(100)
 
-// 添加一个原始数据的引用
-const originalChannelList = [
+// 修改初始列表数据，按创建时间倒序排列
+const channelList = ref([
   {
-    id: 1,
-    name: 'A',
-    code: 'FC8888',
-    description: '北大校园地推',
-    createTime: '2025.01.02 12:23:45',
-    totalUsers: 259,
-    yesterdayUsers: 8
+    id: 3,
+    name: 'C',
+    code: 'NZ9999',
+    description: '抖音投流广告',
+    createTime: '2025.01.08 12:23:45',
+    totalUsers: 128,
+    yesterdayUsers: 45
   },
   {
     id: 2,
@@ -88,6 +88,19 @@ const originalChannelList = [
     yesterdayUsers: 32
   },
   {
+    id: 1,
+    name: 'A',
+    code: 'FC8888',
+    description: '北大校园地推',
+    createTime: '2025.01.02 12:23:45',
+    totalUsers: 259,
+    yesterdayUsers: 8
+  }
+])
+
+// originalChannelList 的定义也保持按时间倒序
+const originalChannelList = [
+  {
     id: 3,
     name: 'C',
     code: 'NZ9999',
@@ -95,10 +108,26 @@ const originalChannelList = [
     createTime: '2025.01.08 12:23:45',
     totalUsers: 128,
     yesterdayUsers: 45
+  },
+  {
+    id: 2,
+    name: 'B',
+    code: 'FC6666',
+    description: '北京地铁广告',
+    createTime: '2025.01.05 12:23:45',
+    totalUsers: 987,
+    yesterdayUsers: 32
+  },
+  {
+    id: 1,
+    name: 'A',
+    code: 'FC8888',
+    description: '北大校园地推',
+    createTime: '2025.01.02 12:23:45',
+    totalUsers: 259,
+    yesterdayUsers: 8
   }
 ]
-
-const channelList = ref([...originalChannelList])
 
 // 查看详情
 const handleView = (row: any) => {

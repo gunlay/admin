@@ -100,18 +100,18 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(100)
 
-// 添加一个原始数据的引用
-const originalOrderList = [
+// 修改初始列表数据，按下单时间倒序排列
+const orderList = ref([
   {
-    orderNo: 'DD20250102001',
-    payerName: '张三',
-    payerPhone: '18812342349',
-    receiverName: '张三',
-    receiverPhone: '18812342349',
-    createTime: '2025.01.02 12:23:45',
-    status: '未支付',
-    amount: 99,
-    receiveTime: ''
+    orderNo: 'DD20250108001',
+    payerName: '王五',
+    payerPhone: '13412349872',
+    receiverName: '王五',
+    receiverPhone: '13412349872',
+    createTime: '2025.01.08 12:23:45',
+    status: '已收货',
+    amount: 199,
+    receiveTime: '2025.01.08 12:23:45'
   },
   {
     orderNo: 'DD20250105001',
@@ -125,6 +125,21 @@ const originalOrderList = [
     receiveTime: ''
   },
   {
+    orderNo: 'DD20250102001',
+    payerName: '张三',
+    payerPhone: '18812342349',
+    receiverName: '张三',
+    receiverPhone: '18812342349',
+    createTime: '2025.01.02 12:23:45',
+    status: '未支付',
+    amount: 99,
+    receiveTime: ''
+  }
+])
+
+// originalOrderList 的定义也保持按时间倒序
+const originalOrderList = [
+  {
     orderNo: 'DD20250108001',
     payerName: '王五',
     payerPhone: '13412349872',
@@ -134,10 +149,30 @@ const originalOrderList = [
     status: '已收货',
     amount: 199,
     receiveTime: '2025.01.08 12:23:45'
+  },
+  {
+    orderNo: 'DD20250105001',
+    payerName: '李四',
+    payerPhone: '13412349874',
+    receiverName: '李四',
+    receiverPhone: '13412349874',
+    createTime: '2025.01.05 12:23:45',
+    status: '已支付',
+    amount: 299,
+    receiveTime: ''
+  },
+  {
+    orderNo: 'DD20250102001',
+    payerName: '张三',
+    payerPhone: '18812342349',
+    receiverName: '张三',
+    receiverPhone: '18812342349',
+    createTime: '2025.01.02 12:23:45',
+    status: '未支付',
+    amount: 99,
+    receiveTime: ''
   }
 ]
-
-const orderList = ref([...originalOrderList])
 
 // 手机号中间4位隐藏处理
 const formatPhone = (phone: string) => {

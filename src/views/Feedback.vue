@@ -87,18 +87,18 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(100)
 
-// 添加一个原始数据的引用
-const originalFeedbackList = [
+// 修改初始列表数据，按反馈时间倒序排列
+const feedbackList = ref([
   {
-    id: 'FK20250102001',
-    username: '张三',
-    phone: '18812342349',
-    role: '大学生',
-    contact: 'zhangsan@example.com',
-    type: '功能建议',
-    content: '希望能增加更多的筛选功能',
-    createTime: '2025.01.02 12:23:45',
-    status: '已处理'
+    id: 'FK20250108001',
+    username: '王五',
+    phone: '13412349872',
+    role: '设计师',
+    contact: 'wangwu@example.com',
+    type: '体验优化',
+    content: '界面设计需要优化',
+    createTime: '2025.01.08 12:23:45',
+    status: '未处理'
   },
   {
     id: 'FK20250105001',
@@ -112,6 +112,21 @@ const originalFeedbackList = [
     status: '未处理'
   },
   {
+    id: 'FK20250102001',
+    username: '张三',
+    phone: '18812342349',
+    role: '大学生',
+    contact: 'zhangsan@example.com',
+    type: '功能建议',
+    content: '希望能增加更多的筛选功能',
+    createTime: '2025.01.02 12:23:45',
+    status: '已处理'
+  }
+])
+
+// originalFeedbackList 的定义也保持按时间倒序
+const originalFeedbackList = [
+  {
     id: 'FK20250108001',
     username: '王五',
     phone: '13412349872',
@@ -121,10 +136,30 @@ const originalFeedbackList = [
     content: '界面设计需要优化',
     createTime: '2025.01.08 12:23:45',
     status: '未处理'
+  },
+  {
+    id: 'FK20250105001',
+    username: '李四',
+    phone: '13412349874',
+    role: '程序员',
+    contact: '13412349874',
+    type: 'BUG反馈',
+    content: '页面加载速度较慢',
+    createTime: '2025.01.05 12:23:45',
+    status: '未处理'
+  },
+  {
+    id: 'FK20250102001',
+    username: '张三',
+    phone: '18812342349',
+    role: '大学生',
+    contact: 'zhangsan@example.com',
+    type: '功能建议',
+    content: '希望能增加更多的筛选功能',
+    createTime: '2025.01.02 12:23:45',
+    status: '已处理'
   }
 ]
-
-const feedbackList = ref([...originalFeedbackList])
 
 // 手机号中间4位隐藏处理
 const formatPhone = (phone: string) => {

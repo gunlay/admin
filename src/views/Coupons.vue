@@ -87,25 +87,16 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(100)
 
-// 添加一个原始数据的引用
-const originalCouponList = [
+// 修改初始列表数据，按生效开始时间倒序排列
+const couponList = ref([
   {
-    code: 'XRJ20250102',
-    name: '新注册用户券',
-    type: '满减券',
-    amount: '满100减30',
-    validPeriod: '自领取30日内',
-    createTime: '2025.01.02 12:23:45',
-    status: '已生效'
-  },
-  {
-    code: 'SDD20250105',
-    name: '首单返利券',
-    type: '满减券',
-    amount: '满300减100',
-    validPeriod: '自领取30日内',
-    createTime: '2025.01.05 12:23:45',
-    status: '未生效'
+    code: 'CHJ20250109',
+    name: '促活券',
+    type: '打折券',
+    amount: '8折30封顶',
+    validPeriod: '截止2025.10.20',
+    createTime: '2025.01.08 12:23:45',
+    status: '已下线'
   },
   {
     code: 'CHJ20250108',
@@ -117,6 +108,28 @@ const originalCouponList = [
     status: '已过期'
   },
   {
+    code: 'SDD20250105',
+    name: '首单返利券',
+    type: '满减券',
+    amount: '满300减100',
+    validPeriod: '自领取30日内',
+    createTime: '2025.01.05 12:23:45',
+    status: '未生效'
+  },
+  {
+    code: 'XRJ20250102',
+    name: '新注册用户券',
+    type: '满减券',
+    amount: '满100减30',
+    validPeriod: '自领取30日内',
+    createTime: '2025.01.02 12:23:45',
+    status: '已生效'
+  }
+])
+
+// originalCouponList 的定义也保持按时间倒序
+const originalCouponList = [
+  {
     code: 'CHJ20250109',
     name: '促活券',
     type: '打折券',
@@ -124,10 +137,35 @@ const originalCouponList = [
     validPeriod: '截止2025.10.20',
     createTime: '2025.01.08 12:23:45',
     status: '已下线'
+  },
+  {
+    code: 'CHJ20250108',
+    name: '促活券',
+    type: '满减券',
+    amount: '无门槛减20',
+    validPeriod: '截止2025.10.20',
+    createTime: '2025.01.08 12:23:45',
+    status: '已过期'
+  },
+  {
+    code: 'SDD20250105',
+    name: '首单返利券',
+    type: '满减券',
+    amount: '满300减100',
+    validPeriod: '自领取30日内',
+    createTime: '2025.01.05 12:23:45',
+    status: '未生效'
+  },
+  {
+    code: 'XRJ20250102',
+    name: '新注册用户券',
+    type: '满减券',
+    amount: '满100减30',
+    validPeriod: '自领取30日内',
+    createTime: '2025.01.02 12:23:45',
+    status: '已生效'
   }
 ]
-
-const couponList = ref([...originalCouponList])
 
 // 获取状态标签类型
 const getStatusType = (status: string) => {

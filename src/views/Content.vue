@@ -94,15 +94,15 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(100)
 
-const originalContentList = [
+const contentList = ref([
   {
-    id: 1,
-    name: '张三',
-    phone: '18812342349',
-    role: '大学生',
+    id: 3,
+    name: '王五',
+    phone: '13412349872',
+    role: '程序员',
     category: '一级分类名',
-    createTime: '2025.01.02 12:23:45',
-    status: '未审核'
+    createTime: '2025.01.08 12:23:45',
+    status: '已驳回'
   },
   {
     id: 2,
@@ -114,6 +114,18 @@ const originalContentList = [
     status: '已发布'
   },
   {
+    id: 1,
+    name: '张三',
+    phone: '18812342349',
+    role: '大学生',
+    category: '一级分类名',
+    createTime: '2025.01.02 12:23:45',
+    status: '未审核'
+  }
+])
+
+const originalContentList = [
+  {
     id: 3,
     name: '王五',
     phone: '13412349872',
@@ -121,10 +133,26 @@ const originalContentList = [
     category: '一级分类名',
     createTime: '2025.01.08 12:23:45',
     status: '已驳回'
+  },
+  {
+    id: 2,
+    name: '李四',
+    phone: '13412349874',
+    role: '程序员',
+    category: '一级分类名',
+    createTime: '2025.01.05 12:23:45',
+    status: '已发布'
+  },
+  {
+    id: 1,
+    name: '张三',
+    phone: '18812342349',
+    role: '大学生',
+    category: '一级分类名',
+    createTime: '2025.01.02 12:23:45',
+    status: '未审核'
   }
 ]
-
-const contentList = ref([...originalContentList])
 
 // 手机号中间4位隐藏处理
 const formatPhone = (phone: string) => {

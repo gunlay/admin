@@ -126,14 +126,15 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(100)
 
+// 修改初始列表数据，按审核时间倒序排列
 const authList = ref([
   {
-    id: 1,
-    name: '张三',
-    phone: '18812342349',
-    authType: '工作认证',
-    status: '已通过',
-    authTime: '2025.01.02 12:23:45'
+    id: 3,
+    name: '王五',
+    phone: '13412349872',
+    authType: '技能认证',
+    status: '已拒绝',
+    authTime: '2025.01.08 12:23:45'
   },
   {
     id: 2,
@@ -144,12 +145,12 @@ const authList = ref([
     authTime: '2025.01.05 12:23:45'
   },
   {
-    id: 3,
-    name: '王五',
-    phone: '13412349872',
-    authType: '技能认证',
-    status: '已拒绝',
-    authTime: '2025.01.08 12:23:45'
+    id: 1,
+    name: '张三',
+    phone: '18812342349',
+    authType: '工作认证',
+    status: '已通过',
+    authTime: '2025.01.02 12:23:45'
   }
 ])
 
@@ -204,15 +205,15 @@ const searchForm = reactive({
   status: '全部'
 })
 
-// 添加一个原始数据的引用
+// originalAuthList 的定义也保持按时间倒序
 const originalAuthList = [
   {
-    id: 1,
-    name: '张三',
-    phone: '18812342349',
-    authType: '工作认证',
-    status: '已通过',
-    authTime: '2025.01.02 12:23:45'
+    id: 3,
+    name: '王五',
+    phone: '13412349872',
+    authType: '技能认证',
+    status: '已拒绝',
+    authTime: '2025.01.08 12:23:45'
   },
   {
     id: 2,
@@ -223,12 +224,12 @@ const originalAuthList = [
     authTime: '2025.01.05 12:23:45'
   },
   {
-    id: 3,
-    name: '王五',
-    phone: '13412349872',
-    authType: '技能认证',
-    status: '已拒绝',
-    authTime: '2025.01.08 12:23:45'
+    id: 1,
+    name: '张三',
+    phone: '18812342349',
+    authType: '工作认证',
+    status: '已通过',
+    authTime: '2025.01.02 12:23:45'
   }
 ]
 
