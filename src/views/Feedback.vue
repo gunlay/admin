@@ -1,21 +1,18 @@
 <template>
   <el-config-provider :locale="locale">
     <div class="feedback-container">
-      <h2>意见反馈管理</h2>
+      <h2>意见反馈</h2>
       <el-card>
         <template #header>
           <el-form :inline="true" :model="searchForm">
             <el-form-item label="用户名">
               <el-input v-model="searchForm.username" placeholder="请输入用户名" />
             </el-form-item>
-            <el-form-item label="手机号">
-              <el-input v-model="searchForm.phone" placeholder="请输入手机号" />
-            </el-form-item>
-            <el-form-item label="反馈状态">
+            <el-form-item label="状态">
               <el-select v-model="searchForm.status" placeholder="请选择状态">
                 <el-option label="全部" value="全部" />
-                <el-option label="已处理" value="已处理" />
                 <el-option label="未处理" value="未处理" />
+                <el-option label="已处理" value="已处理" />
               </el-select>
             </el-form-item>
             <el-form-item>
@@ -26,18 +23,15 @@
         </template>
 
         <el-table :data="displayFeedbackList" style="width: 100%">
-          <el-table-column prop="id" label="反馈编号" width="120" />
-          <el-table-column prop="username" label="用户名" width="100" />
-          <el-table-column label="手机号" width="120">
+          <el-table-column prop="id" label="ID" width="80" />
+          <el-table-column prop="username" label="用户名" width="120" />
+          <el-table-column prop="content" label="反馈内容" min-width="200" show-overflow-tooltip />
+          <el-table-column prop="createTime" label="反馈时间" width="180" />
+          <el-table-column prop="handleTime" label="处理时间" width="180">
             <template #default="scope">
-              {{ formatPhone(scope.row.phone) }}
+              {{ scope.row.handleTime || '—' }}
             </template>
           </el-table-column>
-          <el-table-column prop="role" label="用户角色" width="100" />
-          <el-table-column prop="contact" label="联系方式" width="120" />
-          <el-table-column prop="type" label="反馈类型" width="100" />
-          <el-table-column prop="content" label="反馈内容" show-overflow-tooltip />
-          <el-table-column prop="createTime" label="反馈时间" width="180" />
           <el-table-column label="状态" width="100">
             <template #default="scope">
               <el-tag :type="getStatusType(scope.row.status)">
@@ -45,7 +39,7 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="100">
+          <el-table-column label="操作" width="120">
             <template #default="scope">
               <el-button 
                 type="primary" 
@@ -67,6 +61,64 @@
             layout="total, sizes, prev, pager, next, jumper"
           />
         </div>
+
+        <!-- 查看/处理对话框 -->
+        <el-dialog
+          v-model="dialogVisible"
+          :title="formData.status === '未处理' ? '处理反馈' : '查看反馈'"
+          width="600px"
+        >
+          <el-descriptions :column="1" border>
+            <el-descriptions-item label="反馈ID">
+              {{ formData.id }}
+            </el-descriptions-item>
+            <el-descriptions-item label="用户名">
+              {{ formData.username }}
+            </el-descriptions-item>
+            <el-descriptions-item label="反馈内容">
+              {{ formData.content }}
+            </el-descriptions-item>
+            <el-descriptions-item label="反馈时间">
+              {{ formData.createTime }}
+            </el-descriptions-item>
+            <el-descriptions-item label="状态">
+              <el-tag :type="getStatusType(formData.status)">
+                {{ formData.status }}
+              </el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item label="处理时间" v-if="formData.handleTime">
+              {{ formData.handleTime }}
+            </el-descriptions-item>
+            <el-descriptions-item label="处理结果" v-if="formData.result">
+              {{ formData.result }}
+            </el-descriptions-item>
+          </el-descriptions>
+
+          <template v-if="formData.status === '未处理'">
+            <div class="process-form">
+              <h4>处理结果</h4>
+              <el-input
+                v-model="formData.result"
+                type="textarea"
+                :rows="4"
+                placeholder="请输入处理结果"
+              />
+            </div>
+          </template>
+
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="dialogVisible = false">关闭</el-button>
+              <el-button 
+                v-if="formData.status === '未处理'"
+                type="primary" 
+                @click="handleSubmit"
+              >
+                提交处理
+              </el-button>
+            </span>
+          </template>
+        </el-dialog>
       </el-card>
     </div>
   </el-config-provider>
@@ -77,148 +129,118 @@ import { ref, reactive, computed } from 'vue'
 import { ElMessage, ElConfigProvider } from 'element-plus'
 import { locale } from '../config/element-plus'
 
-const searchForm = reactive({
-  username: '',
-  phone: '',
-  status: '全部'
-})
+interface Feedback {
+  id: number
+  username: string
+  content: string
+  createTime: string
+  handleTime?: string
+  status: string
+  result?: string
+}
 
-const currentPage = ref(1)
-const pageSize = ref(10)
-// 计算总条数
-const total = computed(() => originalFeedbackList.length)
-
-// 计算当前页显示的数据
-const displayFeedbackList = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value
-  const end = start + pageSize.value
-  return feedbackList.value.slice(start, end)
-})
-
-// 修改初始列表数据，按反馈时间倒序排列
-const feedbackList = ref([
+// 列表数据
+const feedbackList = ref<Feedback[]>([
   {
-    id: 'FK20250108001',
-    username: '王五',
-    phone: '13412349872',
-    role: '设计师',
-    contact: 'wangwu@example.com',
-    type: '体验优化',
-    content: '界面设计需要优化',
-    createTime: '2025.01.08 12:23:45',
-    status: '未处理'
-  },
-  {
-    id: 'FK20250105001',
-    username: '李四',
-    phone: '13412349874',
-    role: '程序员',
-    contact: '13412349874',
-    type: 'BUG反馈',
-    content: '页面加载速度较慢',
-    createTime: '2025.01.05 12:23:45',
-    status: '未处理'
-  },
-  {
-    id: 'FK20250102001',
+    id: 1,
     username: '张三',
-    phone: '18812342349',
-    role: '大学生',
-    contact: 'zhangsan@example.com',
-    type: '功能建议',
-    content: '希望能增加更多的筛选功能',
-    createTime: '2025.01.02 12:23:45',
-    status: '已处理'
+    content: '系统使用很流畅，但是希望能增加更多功能',
+    createTime: '2024.02.09 15:30:00',
+    status: '未处理'
+  },
+  {
+    id: 2,
+    username: '李四',
+    content: '界面设计很好看，用起来很方便',
+    createTime: '2024.02.09 14:20:00',
+    handleTime: '2024.02.09 16:30:00',
+    status: '已处理',
+    result: '感谢您的反馈，我们会继续努力提供更好的服务'
   }
 ])
 
-// originalFeedbackList 的定义也保持按时间倒序
-const originalFeedbackList = [
-  {
-    id: 'FK20250108001',
-    username: '王五',
-    phone: '13412349872',
-    role: '设计师',
-    contact: 'wangwu@example.com',
-    type: '体验优化',
-    content: '界面设计需要优化',
-    createTime: '2025.01.08 12:23:45',
-    status: '未处理'
-  },
-  {
-    id: 'FK20250105001',
-    username: '李四',
-    phone: '13412349874',
-    role: '程序员',
-    contact: '13412349874',
-    type: 'BUG反馈',
-    content: '页面加载速度较慢',
-    createTime: '2025.01.05 12:23:45',
-    status: '未处理'
-  },
-  {
-    id: 'FK20250102001',
-    username: '张三',
-    phone: '18812342349',
-    role: '大学生',
-    contact: 'zhangsan@example.com',
-    type: '功能建议',
-    content: '希望能增加更多的筛选功能',
-    createTime: '2025.01.02 12:23:45',
-    status: '已处理'
-  }
-]
+const searchForm = reactive({
+  username: '',
+  status: '全部'
+})
 
-// 手机号中间4位隐藏处理
-const formatPhone = (phone: string) => {
-  if (!phone) return ''
-  return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
-}
-
-// 获取状态标签类型
-const getStatusType = (status: string) => {
-  const statusMap: Record<string, string> = {
-    '已处理': 'success',
-    '未处理': 'warning'
-  }
-  return statusMap[status] || 'info'
-}
-
-// 查看详情
-const handleView = (row: any) => {
-  console.log('查看详情:', row)
-}
-
-// 修改查询功能，保持排序和分页
-const handleSearch = () => {
-  // 每次都基于原始数据进行过滤
-  const filteredList = originalFeedbackList.filter(feedback => {
+// 过滤后的列表
+const filteredFeedbackList = computed(() => {
+  return feedbackList.value.filter(feedback => {
     const matchUsername = searchForm.username ? feedback.username.includes(searchForm.username) : true
-    const matchPhone = searchForm.phone ? feedback.phone.includes(searchForm.phone) : true
     const matchStatus = searchForm.status === '全部' ? true : feedback.status === searchForm.status
-    
-    return matchUsername && matchPhone && matchStatus
+    return matchUsername && matchStatus
   })
+})
+
+// 分页相关
+const currentPage = ref(1)
+const pageSize = ref(10)
+const total = computed(() => filteredFeedbackList.value.length)
+
+const displayFeedbackList = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return filteredFeedbackList.value.slice(start, end)
+})
+
+// 对话框相关
+const dialogVisible = ref(false)
+const formData = reactive<Feedback>({
+  id: 0,
+  username: '',
+  content: '',
+  createTime: '',
+  status: '未处理',
+  result: ''
+})
+
+// 查看功能
+const handleView = (row: Feedback) => {
+  Object.assign(formData, row)
+  dialogVisible.value = true
+}
+
+// 提交处理
+const handleSubmit = () => {
+  if (!formData.result?.trim()) {
+    ElMessage.warning('请输入处理结果')
+    return
+  }
+
+  const now = new Date().toLocaleString('zh-CN').replace(/\//g, '.')
+  const index = feedbackList.value.findIndex(item => item.id === formData.id)
   
-  feedbackList.value = filteredList
-  // 重置到第一页
+  if (index > -1) {
+    const newList = [...feedbackList.value]
+    newList[index] = {
+      ...formData,
+      status: '已处理',
+      handleTime: now
+    }
+    feedbackList.value = newList
+    ElMessage.success('处理成功')
+    dialogVisible.value = false
+  }
+}
+
+// 查询功能
+const handleSearch = () => {
   currentPage.value = 1
   ElMessage.success('查询成功')
 }
 
-// 修改重置功能
+// 重置功能
 const handleReset = () => {
-  // 重置表单
   searchForm.username = ''
-  searchForm.phone = ''
   searchForm.status = '全部'
-  
-  // 重置数据为初始状态
-  feedbackList.value = [...originalFeedbackList]
-  // 重置到第一页
   currentPage.value = 1
-  
   ElMessage.success('重置成功')
+}
+
+// 获取状态标签类型
+const getStatusType = (status: string) => {
+  return status === '已处理' ? 'success' : 'warning'
 }
 </script>
 
@@ -231,6 +253,17 @@ const handleReset = () => {
   margin-top: 20px;
   display: flex;
   justify-content: flex-end;
+}
+
+.process-form {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--el-border-color-lighter);
+
+  h4 {
+    margin: 0 0 10px;
+    color: var(--el-text-color-regular);
+  }
 }
 
 :deep(.el-tag) {
@@ -260,5 +293,34 @@ const handleReset = () => {
 
 :deep(.el-card__header) {
   padding: 20px;
+}
+
+:deep(.el-descriptions) {
+  padding: 20px;
+}
+
+:deep(.el-descriptions__label) {
+  width: 120px;
+  justify-content: flex-end;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+:deep(.el-dialog) {
+  .el-input,
+  .el-select,
+  .el-textarea {
+    width: 100%;
+  }
+}
+
+:deep(.el-button--link) {
+  padding: 4px 8px;
+  height: auto;
+  margin: 0 4px;
 }
 </style> 
