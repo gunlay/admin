@@ -14,7 +14,7 @@
             <el-form-item label="投诉状态">
               <el-select v-model="searchForm.status" placeholder="请选择状态">
                 <el-option label="全部" value="全部" />
-                <el-option label="已解决" value="已解决" />
+                <el-option label="已处理" value="已处理" />
                 <el-option label="处理中" value="处理中" />
               </el-select>
             </el-form-item>
@@ -40,6 +40,11 @@
             </template>
           </el-table-column>
           <el-table-column prop="createTime" label="投诉时间" width="180" />
+          <el-table-column label="处理时间" width="180">
+            <template #default="scope">
+              {{ scope.row.handleTime || '—' }}
+            </template>
+          </el-table-column>
           <el-table-column prop="type" label="投诉类型" width="120" />
           <el-table-column prop="materials" label="投诉材料" width="120" />
           <el-table-column label="状态" width="100">
@@ -72,6 +77,94 @@
           />
         </div>
       </el-card>
+
+      <!-- 查看详情对话框 -->
+      <el-dialog
+        v-model="dialogVisible"
+        title="投诉详情"
+        width="600px"
+      >
+        <el-descriptions :column="1" border>
+          <el-descriptions-item label="投诉编号">
+            {{ formData.id }}
+          </el-descriptions-item>
+          <el-descriptions-item label="投诉用户">
+            {{ formData.username }}
+          </el-descriptions-item>
+          <el-descriptions-item label="手机号">
+            {{ formData.phone }}
+          </el-descriptions-item>
+          <el-descriptions-item label="投诉类型">
+            {{ formData.type }}
+          </el-descriptions-item>
+          <el-descriptions-item label="投诉内容">
+            {{ formData.content }}
+          </el-descriptions-item>
+          <el-descriptions-item label="投诉时间">
+            {{ formData.createTime }}
+          </el-descriptions-item>
+          <el-descriptions-item label="处理状态">
+            <el-tag :type="getStatusType(formData.status)">
+              {{ formData.status }}
+            </el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="处理时间" v-if="formData.handleTime">
+            {{ formData.handleTime }}
+          </el-descriptions-item>
+          <el-descriptions-item label="处理结果" v-if="formData.result">
+            {{ formData.result }}
+          </el-descriptions-item>
+          <el-descriptions-item label="相关图片" v-if="formData.images && formData.images.length">
+            <div class="image-list">
+              <el-image
+                v-for="(url, index) in formData.images"
+                :key="index"
+                :src="url"
+                :preview-src-list="formData.images"
+                fit="cover"
+                class="complaint-image"
+              />
+            </div>
+          </el-descriptions-item>
+        </el-descriptions>
+
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="dialogVisible = false">关闭</el-button>
+            <el-button 
+              type="primary" 
+              v-if="formData.status === '处理中'"
+              @click="handleProcess"
+            >
+              处理
+            </el-button>
+          </span>
+        </template>
+      </el-dialog>
+
+      <!-- 处理确认对话框 -->
+      <el-dialog
+        v-model="processDialogVisible"
+        title="处理投诉"
+        width="500px"
+      >
+        <el-form :model="processForm" label-width="100px">
+          <el-form-item label="处理结果" required>
+            <el-input
+              v-model="processForm.result"
+              type="textarea"
+              :rows="4"
+              placeholder="请输入处理结果"
+            />
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="processDialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="submitProcess">确定</el-button>
+          </span>
+        </template>
+      </el-dialog>
     </div>
   </el-config-provider>
 </template>
@@ -108,6 +201,7 @@ const complaintList = ref([
     defendant: '李四',
     defendantPhone: '13412349872',
     createTime: '2025.01.08 12:23:45',
+    handleTime: '',
     type: '服务投诉',
     materials: '查看',
     status: '处理中'
@@ -119,6 +213,7 @@ const complaintList = ref([
     defendant: '张三',
     defendantPhone: '13412349874',
     createTime: '2025.01.05 12:23:45',
+    handleTime: '',
     type: '商品投诉',
     materials: '查看',
     status: '处理中'
@@ -130,9 +225,10 @@ const complaintList = ref([
     defendant: '王五',
     defendantPhone: '18812342349',
     createTime: '2025.01.02 12:23:45',
+    handleTime: '2025.01.03 15:30:22',
     type: '服务投诉',
     materials: '查看',
-    status: '已解决'
+    status: '已处理'
   }
 ])
 
@@ -145,6 +241,7 @@ const originalComplaintList = [
     defendant: '李四',
     defendantPhone: '13412349872',
     createTime: '2025.01.08 12:23:45',
+    handleTime: '',
     type: '服务投诉',
     materials: '查看',
     status: '处理中'
@@ -156,6 +253,7 @@ const originalComplaintList = [
     defendant: '张三',
     defendantPhone: '13412349874',
     createTime: '2025.01.05 12:23:45',
+    handleTime: '',
     type: '商品投诉',
     materials: '查看',
     status: '处理中'
@@ -167,9 +265,10 @@ const originalComplaintList = [
     defendant: '王五',
     defendantPhone: '18812342349',
     createTime: '2025.01.02 12:23:45',
+    handleTime: '2025.01.03 15:30:22',
     type: '服务投诉',
     materials: '查看',
-    status: '已解决'
+    status: '已处理'
   }
 ]
 
@@ -179,18 +278,88 @@ const formatPhone = (phone: string) => {
   return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
 }
 
-// 获取状态标签类型
-const getStatusType = (status: string) => {
-  const statusMap: Record<string, string> = {
-    '已解决': 'success',
-    '处理中': 'warning'
-  }
-  return statusMap[status] || 'info'
-}
+const dialogVisible = ref(false)
+const formData = reactive({
+  id: '',
+  username: '',
+  phone: '',
+  type: '',
+  content: '',
+  createTime: '',
+  status: '',
+  handleTime: '',
+  result: '',
+  images: [] as string[]
+})
 
 // 查看详情
 const handleView = (row: any) => {
-  console.log('查看详情:', row)
+  formData.id = row.id
+  formData.username = row.complainant
+  formData.phone = row.phone
+  formData.type = row.type
+  formData.content = row.materials
+  formData.createTime = row.createTime
+  formData.status = row.status
+  formData.handleTime = row.handleTime
+  formData.result = row.result
+  formData.images = row.images || []
+  
+  dialogVisible.value = true
+}
+
+const processDialogVisible = ref(false)
+const processForm = reactive({
+  result: ''
+})
+
+// 处理投诉
+const handleProcess = () => {
+  processForm.result = '' // 重置处理结果
+  processDialogVisible.value = true
+}
+
+// 提交处理结果
+const submitProcess = () => {
+  if (!processForm.result.trim()) {
+    ElMessage.warning('请输入处理结果')
+    return
+  }
+
+  // 更新列表中的状态
+  const updateComplaint = (list: any[]) => {
+    const index = list.findIndex(item => item.id === formData.id)
+    if (index > -1) {
+      list[index] = {
+        ...list[index],
+        status: '已处理',
+        handleTime: new Date().toLocaleString('zh-CN').replace(/\//g, '.'),
+        result: processForm.result
+      }
+    }
+  }
+
+  // 更新当前列表和原始列表
+  updateComplaint(complaintList.value)
+  updateComplaint(originalComplaintList)
+
+  // 更新表单数据
+  formData.status = '已处理'
+  formData.handleTime = new Date().toLocaleString('zh-CN').replace(/\//g, '.')
+  formData.result = processForm.result
+
+  ElMessage.success('处理成功')
+  processDialogVisible.value = false
+}
+
+// 获取状态标签类型
+const getStatusType = (status: string) => {
+  const statusMap: Record<string, string> = {
+    '未处理': 'danger',
+    '处理中': 'warning',
+    '已处理': 'success'
+  }
+  return statusMap[status] || 'info'
 }
 
 // 修改查询功能，保持排序和分页
@@ -266,5 +435,40 @@ const handleReset = () => {
 
 :deep(.el-card__header) {
   padding: 20px;
+}
+
+.complaint-image {
+  width: 120px;
+  height: 120px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.image-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+:deep(.el-descriptions) {
+  padding: 20px;
+}
+
+:deep(.el-descriptions__label) {
+  width: 120px;
+  justify-content: flex-end;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+:deep(.el-dialog) {
+  .el-textarea {
+    width: 100%;
+  }
 }
 </style> 
