@@ -41,14 +41,14 @@
             <template #default="scope">
               <el-button 
                 type="primary" 
-                link
+                size="small"
                 @click="handleView(scope.row)"
               >
                 查看
               </el-button>
               <el-button 
                 type="primary" 
-                link
+                size="small"
                 @click="handleEdit(scope.row)"
               >
                 编辑
@@ -408,5 +408,12 @@ const handleSubmit = () => {
 
 :deep(.el-button--link:last-child) {
   margin-right: 0;
+}
+
+:deep(.el-button--small) {
+  padding: 5px 12px;
+  height: 24px;
+  font-size: 12px;
+  border-radius: 2px;
 }
 </style> 

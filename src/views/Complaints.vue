@@ -58,7 +58,7 @@
             <template #default="scope">
               <el-button 
                 type="primary" 
-                link
+                size="small"
                 @click="handleView(scope.row)"
               >
                 查看
@@ -470,5 +470,12 @@ const handleReset = () => {
   .el-textarea {
     width: 100%;
   }
+}
+
+:deep(.el-button--small) {
+  padding: 5px 12px;
+  height: 24px;
+  font-size: 12px;
+  border-radius: 2px;
 }
 </style> 
