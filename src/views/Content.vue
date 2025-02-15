@@ -94,6 +94,18 @@
           <el-form-item label="内容描述">
             <span>{{ formData.description }}</span>
           </el-form-item>
+          <el-form-item label="时长">
+            <span>{{ formData.duration }}</span>
+          </el-form-item>
+          <el-form-item label="价格">
+            <span>{{ formData.price }}</span>
+          </el-form-item>
+          <el-form-item label="时间">
+            <span>{{ formData.time }}</span>
+          </el-form-item>
+          <el-form-item label="附件">
+            <span>{{ formData.attachment }}</span>
+          </el-form-item>
           <el-form-item label="图片内容" v-if="formData.images">
             <el-image
               v-for="(image, index) in formData.images"
@@ -210,6 +222,10 @@ const formData = reactive({
   type: '',
   title: '',
   description: '',
+  duration: '',
+  price: '',
+  time: '',
+  attachment: '',
   images: [] as string[],
   createTime: '',
   status: ''
@@ -238,6 +254,9 @@ const handleView = (row: any) => {
   formData.type = row.role
   formData.title = row.category
   formData.description = row.type
+  formData.duration = row.duration
+  formData.price = row.price
+  formData.time = row.time
   formData.images = row.images || []
   formData.createTime = row.createTime
   formData.status = row.status
