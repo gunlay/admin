@@ -42,13 +42,18 @@
             </template>
           </el-table-column>
           <el-table-column prop="role" label="用户角色" width="100" />
-          <el-table-column prop="category" label="所属类别" width="120" />
-          <el-table-column prop="createTime" label="发布时间" width="180" />
+          <el-table-column prop="category" label="所属分类" width="120" />
+          <el-table-column prop="createTime" label="提交时间" width="180" />
           <el-table-column label="发布状态" width="100">
             <template #default="scope">
               <el-tag :type="getStatusType(scope.row.status)">
                 {{ scope.row.status }}
               </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="审核时间" width="180">
+            <template #default="scope">
+              {{ scope.row.auditTime || '2025.01.08 12:23:45' }}
             </template>
           </el-table-column>
           <el-table-column label="操作" width="100">
@@ -106,6 +111,12 @@
           <el-form-item label="附件">
             <span>{{ formData.attachment }}</span>
           </el-form-item>
+          <el-form-item label="提交时间">
+            <span>{{ formData.createTime }}</span>
+          </el-form-item>
+          <el-form-item label="审核时间">
+            <span>{{ formData.auditTime }}</span>
+          </el-form-item>
           <el-form-item label="图片内容" v-if="formData.images">
             <el-image
               v-for="(image, index) in formData.images"
@@ -115,9 +126,6 @@
               fit="cover"
               class="content-image"
             />
-          </el-form-item>
-          <el-form-item label="发布时间">
-            <span>{{ formData.createTime }}</span>
           </el-form-item>
           <el-form-item label="审核状态">
             <el-tag :type="getStatusType(formData.status)">
@@ -228,6 +236,7 @@ const formData = reactive({
   attachment: '',
   images: [] as string[],
   createTime: '',
+  auditTime: '',
   status: ''
 })
 

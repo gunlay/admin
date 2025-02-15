@@ -42,7 +42,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="authType" label="认证类别" width="120" />
-          <el-table-column label="申请时间" width="180">
+          <el-table-column label="提交时间" width="180">
             <template #default="scope">
               {{ scope.row.createTime }}
             </template>
@@ -101,7 +101,7 @@
               class="auth-image"
             />
           </el-form-item>
-          <el-form-item label="申请时间">
+          <el-form-item label="提交时间">
             <span>{{ formData.createTime }}</span>
           </el-form-item>
           <el-form-item label="审核状态">
