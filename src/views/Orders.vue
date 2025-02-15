@@ -16,7 +16,7 @@
                 <el-option label="全部" value="全部" />
                 <el-option label="未支付" value="未支付" />
                 <el-option label="已支付" value="已支付" />
-                <el-option label="已收货" value="已收货" />
+                <el-option label="已完成" value="已完成" />
               </el-select>
             </el-form-item>
             <el-form-item>
@@ -53,7 +53,12 @@
               ¥{{ scope.row.amount }}
             </template>
           </el-table-column>
-          <el-table-column prop="receiveTime" label="收货时间" width="180">
+          <el-table-column prop="actualAmount" label="实付金额" width="100">
+            <template #default="scope">
+              ¥{{ scope.row.actualAmount }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="receiveTime" label="完成时间" width="180">
             <template #default="scope">
               {{ scope.row.receiveTime || '—' }}
             </template>
@@ -81,6 +86,51 @@
           />
         </div>
       </el-card>
+
+      <!-- 查看详情对话框 -->
+      <el-dialog
+        v-model="dialogVisible"
+        title="订单详情"
+        width="500px"
+      >
+        <el-form :model="formData" label-width="100px">
+          <el-form-item label="订单号">
+            <span>{{ formData.orderNo }}</span>
+          </el-form-item>
+          <el-form-item label="付款人">
+            <span>{{ formData.payerName }}</span>
+          </el-form-item>
+          <el-form-item label="收款人">
+            <span>{{ formData.receiverName }}</span>
+          </el-form-item>
+          <el-form-item label="下单时间">
+            <span>{{ formData.createTime }}</span>
+          </el-form-item>
+          <el-form-item label="订单状态">
+            <el-tag :type="getStatusType(formData.status)">
+              {{ formData.status }}
+            </el-tag>
+          </el-form-item>
+          <el-form-item label="订单金额">
+            <span>¥{{ formData.amount }}</span>
+          </el-form-item>
+          <el-form-item label="实付金额">
+            <span>¥{{ formData.actualAmount }}</span>
+          </el-form-item>
+          <el-form-item label="完成时间">
+            <span>{{ formData.receiveTime || '—' }}</span>
+          </el-form-item>
+          <el-form-item label="服务时间">
+            <span>{{ formData.serviceTime }}</span>
+          </el-form-item>
+          <el-form-item label="会议码">
+            <span>{{ formData.meetingCode }}</span>
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <el-button @click="dialogVisible = false">关闭</el-button>
+        </template>
+      </el-dialog>
     </div>
   </el-config-provider>
 </template>
@@ -117,9 +167,12 @@ const orderList = ref([
     receiverName: '王五',
     receiverPhone: '13412349872',
     createTime: '2025.01.08 12:23:45',
-    status: '已收货',
+    status: '已完成',
     amount: 199,
-    receiveTime: '2025.01.08 12:23:45'
+    actualAmount: 199,
+    receiveTime: '2025.01.08 12:23:45',
+    serviceTime: '2025.01.09 10:00:00',
+    meetingCode: '123456'
   },
   {
     orderNo: 'DD20250105001',
@@ -130,7 +183,10 @@ const orderList = ref([
     createTime: '2025.01.05 12:23:45',
     status: '已支付',
     amount: 299,
-    receiveTime: ''
+    actualAmount: 299,
+    receiveTime: '',
+    serviceTime: '',
+    meetingCode: ''
   },
   {
     orderNo: 'DD20250102001',
@@ -141,7 +197,10 @@ const orderList = ref([
     createTime: '2025.01.02 12:23:45',
     status: '未支付',
     amount: 99,
-    receiveTime: ''
+    actualAmount: 0,
+    receiveTime: '',
+    serviceTime: '',
+    meetingCode: ''
   }
 ])
 
@@ -154,9 +213,12 @@ const originalOrderList = [
     receiverName: '王五',
     receiverPhone: '13412349872',
     createTime: '2025.01.08 12:23:45',
-    status: '已收货',
+    status: '已完成',
     amount: 199,
-    receiveTime: '2025.01.08 12:23:45'
+    actualAmount: 199,
+    receiveTime: '2025.01.08 12:23:45',
+    serviceTime: '2025.01.09 10:00:00',
+    meetingCode: '123456'
   },
   {
     orderNo: 'DD20250105001',
@@ -167,7 +229,10 @@ const originalOrderList = [
     createTime: '2025.01.05 12:23:45',
     status: '已支付',
     amount: 299,
-    receiveTime: ''
+    actualAmount: 299,
+    receiveTime: '',
+    serviceTime: '',
+    meetingCode: ''
   },
   {
     orderNo: 'DD20250102001',
@@ -178,9 +243,26 @@ const originalOrderList = [
     createTime: '2025.01.02 12:23:45',
     status: '未支付',
     amount: 99,
-    receiveTime: ''
+    actualAmount: 0,
+    receiveTime: '',
+    serviceTime: '',
+    meetingCode: ''
   }
 ]
+
+const dialogVisible = ref(false)
+const formData = reactive({
+  orderNo: '',
+  payerName: '',
+  receiverName: '',
+  createTime: '',
+  status: '',
+  amount: 0,
+  actualAmount: 0,
+  receiveTime: '',
+  serviceTime: '',
+  meetingCode: ''
+})
 
 // 手机号中间4位隐藏处理
 const formatPhone = (phone: string) => {
@@ -193,14 +275,24 @@ const getStatusType = (status: string) => {
   const statusMap: Record<string, string> = {
     '未支付': 'warning',
     '已支付': 'success',
-    '已收货': 'info'
+    '已完成': 'info'
   }
   return statusMap[status] || 'info'
 }
 
 // 查看详情
 const handleView = (row: any) => {
-  console.log('查看详情:', row)
+  formData.orderNo = row.orderNo
+  formData.payerName = row.payerName
+  formData.receiverName = row.receiverName
+  formData.createTime = row.createTime
+  formData.status = row.status
+  formData.amount = row.amount
+  formData.actualAmount = row.actualAmount
+  formData.receiveTime = row.receiveTime
+  formData.serviceTime = row.serviceTime
+  formData.meetingCode = row.meetingCode
+  dialogVisible.value = true
 }
 
 // 修改查询功能，保持排序和分页
