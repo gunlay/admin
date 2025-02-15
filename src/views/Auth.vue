@@ -42,6 +42,11 @@
             </template>
           </el-table-column>
           <el-table-column prop="authType" label="认证类别" width="120" />
+          <el-table-column label="申请时间" width="180">
+            <template #default="scope">
+              {{ scope.row.createTime }}
+            </template>
+          </el-table-column>
           <el-table-column label="审核状态" width="100">
             <template #default="scope">
               <el-tag :type="getStatusType(scope.row.status)">
@@ -97,12 +102,15 @@
             />
           </el-form-item>
           <el-form-item label="申请时间">
-            <span>{{ formData.applyTime }}</span>
+            <span>{{ formData.createTime }}</span>
           </el-form-item>
           <el-form-item label="审核状态">
             <el-tag :type="getStatusType(formData.status)">
               {{ formData.status }}
             </el-tag>
+          </el-form-item>
+          <el-form-item label="审核时间">
+            <span>{{ formData.authTime }}</span>
           </el-form-item>
         </el-form>
         <template #footer>
@@ -144,7 +152,8 @@ const authList = ref([
     phone: '13412349872',
     authType: '技能认证',
     status: '已拒绝',
-    authTime: '2025.01.08 12:23:45'
+    authTime: '2025.01.08 12:23:45',
+    createTime: '2025.01.01 12:00:00' // 添加提交时间
   },
   {
     id: 2,
@@ -152,7 +161,8 @@ const authList = ref([
     phone: '13412349874',
     authType: '技能认证',
     status: '未审核',
-    authTime: '2025.01.05 12:23:45'
+    authTime: '-----',
+    createTime: '2025.01.01 12:00:00' // 添加提交时间
   },
   {
     id: 1,
@@ -160,7 +170,8 @@ const authList = ref([
     phone: '18812342349',
     authType: '工作认证',
     status: '已通过',
-    authTime: '2025.01.02 12:23:45'
+    authTime: '2025.01.02 12:23:45',
+    createTime: '2025.01.01 12:00:00' // 添加提交时间
   }
 ])
 
@@ -171,7 +182,8 @@ const formData = reactive({
   type: '',
   materials: '',
   applyTime: '',
-  status: ''
+  status: '',
+  createTime: '' // 添加提交时间
 })
 
 // 手机号中间4位隐藏处理
@@ -198,6 +210,7 @@ const handleView = (row: any) => {
   formData.materials = row.materials || '' // 如果暂时没有材料，使用空字符串
   formData.applyTime = row.authTime
   formData.status = row.status
+  formData.createTime = row.createTime // 添加提交时间
   dialogVisible.value = true
 }
 
@@ -230,7 +243,7 @@ const handleAudit = (action: '通过' | '拒绝') => {
       }).replace(/\//g, '.')
     }
     
-    ElMessage.success(`审核${action}成功`)
+    ElMessage.success('审核成功')
     dialogVisible.value = false
   })
 }
@@ -251,7 +264,8 @@ const originalAuthList = [
     phone: '13412349872',
     authType: '技能认证',
     status: '已拒绝',
-    authTime: '2025.01.08 12:23:45'
+    authTime: '2025.01.08 12:23:45',
+    createTime: '2025.01.01 12:00:00' // 添加提交时间
   },
   {
     id: 2,
@@ -259,7 +273,8 @@ const originalAuthList = [
     phone: '13412349874',
     authType: '技能认证',
     status: '未审核',
-    authTime: '2025.01.05 12:23:45'
+    authTime: '-----',
+    createTime: '2025.01.01 12:00:00' // 添加提交时间
   },
   {
     id: 1,
@@ -267,7 +282,8 @@ const originalAuthList = [
     phone: '18812342349',
     authType: '工作认证',
     status: '已通过',
-    authTime: '2025.01.02 12:23:45'
+    authTime: '2025.01.02 12:23:45',
+    createTime: '2025.01.01 12:00:00' // 添加提交时间
   }
 ]
 
@@ -348,4 +364,4 @@ const handleReset = () => {
   font-size: 12px;
   border-radius: 2px;
 }
-</style> 
+</style>
