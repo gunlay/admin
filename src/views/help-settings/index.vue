@@ -4,33 +4,88 @@
       <h2>帮助中心配置</h2>
       <el-card>
         <template #header>
-          <el-form :inline="true" :model="searchForm">
+          <el-form
+            :inline="true"
+            :model="searchForm"
+          >
             <el-form-item label="标题">
-              <el-input v-model="searchForm.title" placeholder="请输入标题" />
+              <el-input
+                v-model="searchForm.title"
+                placeholder="请输入标题"
+              />
             </el-form-item>
             <el-form-item label="分类">
-              <el-select v-model="searchForm.category" placeholder="请选择分类">
-                <el-option label="全部" value="全部" />
-                <el-option label="新手指南" value="新手指南" />
-                <el-option label="常见问题" value="常见问题" />
-                <el-option label="服务协议" value="服务协议" />
+              <el-select
+                v-model="searchForm.category"
+                placeholder="请选择分类"
+              >
+                <el-option
+                  label="全部"
+                  value="全部"
+                />
+                <el-option
+                  label="新手指南"
+                  value="新手指南"
+                />
+                <el-option
+                  label="常见问题"
+                  value="常见问题"
+                />
+                <el-option
+                  label="服务协议"
+                  value="服务协议"
+                />
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="handleSearch">查询</el-button>
+              <el-button
+                type="primary"
+                @click="handleSearch"
+                >查询</el-button
+              >
               <el-button @click="handleReset">重置</el-button>
-              <el-button type="success" @click="handleCreate">新增帮助文档</el-button>
+              <el-button
+                type="success"
+                @click="handleCreate"
+                >新增帮助文档</el-button
+              >
             </el-form-item>
           </el-form>
         </template>
 
-        <el-table :data="displayHelpList" style="width: 100%">
-          <el-table-column prop="id" label="ID" width="80" />
-          <el-table-column prop="title" label="标题" width="200" />
-          <el-table-column prop="category" label="分类" width="120" />
-          <el-table-column prop="createTime" label="创建时间" width="180" />
-          <el-table-column prop="updateTime" label="更新时间" width="180" />
-          <el-table-column label="状态" width="100">
+        <el-table
+          :data="displayHelpList"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="id"
+            label="ID"
+            width="80"
+          />
+          <el-table-column
+            prop="title"
+            label="标题"
+            width="200"
+          />
+          <el-table-column
+            prop="category"
+            label="分类"
+            width="120"
+          />
+          <el-table-column
+            prop="createTime"
+            label="创建时间"
+            width="180"
+          />
+          <el-table-column
+            prop="updateTime"
+            label="更新时间"
+            width="180"
+          />
+          <el-table-column
+            label="状态"
+            width="100"
+          >
             <template #default="scope">
               <el-switch
                 v-model="scope.row.status"
@@ -40,15 +95,30 @@
               />
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="220">
+          <el-table-column
+            label="操作"
+            width="220"
+          >
             <template #default="scope">
-              <el-button type="primary" size="small" @click="handleEdit(scope.row)">
+              <el-button
+                type="primary"
+                size="small"
+                @click="handleEdit(scope.row)"
+              >
                 编辑
               </el-button>
-              <el-button type="primary" size="small" @click="handleView(scope.row)">
+              <el-button
+                type="primary"
+                size="small"
+                @click="handleView(scope.row)"
+              >
                 查看
               </el-button>
-              <el-button type="danger" size="small" @click="handleDelete(scope.row)">
+              <el-button
+                type="danger"
+                size="small"
+                @click="handleDelete(scope.row)"
+              >
                 删除
               </el-button>
             </template>
@@ -71,18 +141,45 @@
           :title="dialogType === 'create' ? '新增帮助文档' : '编辑帮助文档'"
           width="800px"
         >
-          <el-form :model="formData" label-width="100px">
-            <el-form-item label="标题" required>
-              <el-input v-model="formData.title" placeholder="请输入标题" />
+          <el-form
+            :model="formData"
+            label-width="100px"
+          >
+            <el-form-item
+              label="标题"
+              required
+            >
+              <el-input
+                v-model="formData.title"
+                placeholder="请输入标题"
+              />
             </el-form-item>
-            <el-form-item label="分类" required>
-              <el-select v-model="formData.category" placeholder="请选择分类">
-                <el-option label="新手指南" value="新手指南" />
-                <el-option label="常见问题" value="常见问题" />
-                <el-option label="服务协议" value="服务协议" />
+            <el-form-item
+              label="分类"
+              required
+            >
+              <el-select
+                v-model="formData.category"
+                placeholder="请选择分类"
+              >
+                <el-option
+                  label="新手指南"
+                  value="新手指南"
+                />
+                <el-option
+                  label="常见问题"
+                  value="常见问题"
+                />
+                <el-option
+                  label="服务协议"
+                  value="服务协议"
+                />
               </el-select>
             </el-form-item>
-            <el-form-item label="内容" required>
+            <el-form-item
+              label="内容"
+              required
+            >
               <el-input
                 v-model="formData.content"
                 type="textarea"
@@ -100,13 +197,21 @@
           <template #footer>
             <span class="dialog-footer">
               <el-button @click="dialogVisible = false">取消</el-button>
-              <el-button type="primary" @click="handleSubmit">确定</el-button>
+              <el-button
+                type="primary"
+                @click="handleSubmit"
+                >确定</el-button
+              >
             </span>
           </template>
         </el-dialog>
 
         <!-- 删除确认对话框 -->
-        <el-dialog v-model="deleteDialogVisible" title="确认删除" width="400px">
+        <el-dialog
+          v-model="deleteDialogVisible"
+          title="确认删除"
+          width="400px"
+        >
           <div>确定要删除该帮助文档吗？</div>
           <div class="delete-info">
             <p>标题：{{ deleteItem?.title }}</p>
@@ -115,7 +220,11 @@
           <template #footer>
             <span class="dialog-footer">
               <el-button @click="deleteDialogVisible = false">取消</el-button>
-              <el-button type="danger" @click="confirmDelete">确定</el-button>
+              <el-button
+                type="danger"
+                @click="confirmDelete"
+                >确定</el-button
+              >
             </span>
           </template>
         </el-dialog>

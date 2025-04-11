@@ -4,47 +4,121 @@
       <h2>券码管理</h2>
       <el-card>
         <template #header>
-          <el-form :inline="true" :model="searchForm">
+          <el-form
+            :inline="true"
+            :model="searchForm"
+          >
             <el-form-item label="券码">
-              <el-input v-model="searchForm.code" placeholder="请输入券码" />
+              <el-input
+                v-model="searchForm.code"
+                placeholder="请输入券码"
+              />
             </el-form-item>
             <el-form-item label="状态">
-              <el-select v-model="searchForm.status" placeholder="请选择状态" style="width: 120px">
-                <el-option label="全部" value="全部" />
-                <el-option label="未生效" value="未生效" />
-                <el-option label="已生效" value="已生效" />
-                <el-option label="已过期" value="已过期" />
-                <el-option label="已下线" value="已下线" />
+              <el-select
+                v-model="searchForm.status"
+                placeholder="请选择状态"
+                style="width: 120px"
+              >
+                <el-option
+                  label="全部"
+                  value="全部"
+                />
+                <el-option
+                  label="未生效"
+                  value="未生效"
+                />
+                <el-option
+                  label="已生效"
+                  value="已生效"
+                />
+                <el-option
+                  label="已过期"
+                  value="已过期"
+                />
+                <el-option
+                  label="已下线"
+                  value="已下线"
+                />
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="handleSearch">查询</el-button>
+              <el-button
+                type="primary"
+                @click="handleSearch"
+                >查询</el-button
+              >
               <el-button @click="handleReset">重置</el-button>
-              <el-button type="success" @click="handleCreate">新建</el-button>
+              <el-button
+                type="success"
+                @click="handleCreate"
+                >新建</el-button
+              >
             </el-form-item>
           </el-form>
         </template>
 
-        <el-table :data="displayCouponList" style="width: 100%">
-          <el-table-column prop="code" label="券码" width="120" />
-          <el-table-column prop="name" label="券码名称" width="120" />
-          <el-table-column prop="type" label="券码类型" width="100" />
-          <el-table-column prop="amount" label="券码面额" width="120" />
-          <el-table-column prop="validPeriod" label="有效期" width="120" />
-          <el-table-column prop="createTime" label="生效开始时间" width="180" />
-          <el-table-column label="券码状态" width="100">
+        <el-table
+          :data="displayCouponList"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="code"
+            label="券码"
+            width="120"
+          />
+          <el-table-column
+            prop="name"
+            label="券码名称"
+            width="120"
+          />
+          <el-table-column
+            prop="type"
+            label="券码类型"
+            width="100"
+          />
+          <el-table-column
+            prop="amount"
+            label="券码面额"
+            width="120"
+          />
+          <el-table-column
+            prop="validPeriod"
+            label="有效期"
+            width="120"
+          />
+          <el-table-column
+            prop="createTime"
+            label="生效开始时间"
+            width="180"
+          />
+          <el-table-column
+            label="券码状态"
+            width="100"
+          >
             <template #default="scope">
               <el-tag :type="getStatusType(scope.row.status)">
                 {{ scope.row.status }}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="180">
+          <el-table-column
+            label="操作"
+            width="180"
+          >
             <template #default="scope">
-              <el-button type="primary" size="small" @click="handleView(scope.row)">
+              <el-button
+                type="primary"
+                size="small"
+                @click="handleView(scope.row)"
+              >
                 查看
               </el-button>
-              <el-button type="primary" size="small" @click="handleEdit(scope.row)">
+              <el-button
+                type="primary"
+                size="small"
+                @click="handleEdit(scope.row)"
+              >
                 修改
               </el-button>
             </template>
@@ -67,17 +141,35 @@
           :title="dialogType === 'create' ? '新建券码' : '修改券码'"
           width="500px"
         >
-          <el-form :model="formData" label-width="100px">
+          <el-form
+            :model="formData"
+            label-width="100px"
+          >
             <el-form-item label="券码名称">
-              <el-input v-model="formData.name" placeholder="请输入券码名称" />
+              <el-input
+                v-model="formData.name"
+                placeholder="请输入券码名称"
+              />
             </el-form-item>
             <el-form-item label="券码">
-              <el-input v-model="formData.code" placeholder="请输入券码" />
+              <el-input
+                v-model="formData.code"
+                placeholder="请输入券码"
+              />
             </el-form-item>
             <el-form-item label="券码类型">
-              <el-select v-model="formData.type" placeholder="请选择类型">
-                <el-option label="满减券" value="满减券" />
-                <el-option label="打折券" value="打折券" />
+              <el-select
+                v-model="formData.type"
+                placeholder="请选择类型"
+              >
+                <el-option
+                  label="满减券"
+                  value="满减券"
+                />
+                <el-option
+                  label="打折券"
+                  value="打折券"
+                />
               </el-select>
             </el-form-item>
             <el-form-item label="券码面额">
@@ -100,7 +192,11 @@
                 </el-input>
               </template>
               <template v-else>
-                <el-input v-model="formData.discount" placeholder="请输入折扣" style="width: 45%">
+                <el-input
+                  v-model="formData.discount"
+                  placeholder="请输入折扣"
+                  style="width: 45%"
+                >
                   <template #append>折</template>
                 </el-input>
                 <span style="margin: 0 10px">封顶</span>
@@ -141,7 +237,11 @@
           <template #footer>
             <span class="dialog-footer">
               <el-button @click="dialogVisible = false">取消</el-button>
-              <el-button type="primary" @click="handleSubmit">确定</el-button>
+              <el-button
+                type="primary"
+                @click="handleSubmit"
+                >确定</el-button
+              >
             </span>
           </template>
         </el-dialog>

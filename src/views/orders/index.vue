@@ -4,64 +4,139 @@
       <h2>订单管理</h2>
       <el-card>
         <template #header>
-          <el-form :inline="true" :model="searchForm">
+          <el-form
+            :inline="true"
+            :model="searchForm"
+          >
             <el-form-item label="用户名">
-              <el-input v-model="searchForm.username" placeholder="请输入用户名" />
+              <el-input
+                v-model="searchForm.username"
+                placeholder="请输入用户名"
+              />
             </el-form-item>
             <el-form-item label="手机号">
-              <el-input v-model="searchForm.phone" placeholder="请输入手机号" />
+              <el-input
+                v-model="searchForm.phone"
+                placeholder="请输入手机号"
+              />
             </el-form-item>
             <el-form-item label="订单状态">
-              <el-select v-model="searchForm.status" placeholder="请选择状态">
-                <el-option label="全部" value="全部" />
-                <el-option label="未支付" value="未支付" />
-                <el-option label="已支付" value="已支付" />
-                <el-option label="已完成" value="已完成" />
+              <el-select
+                v-model="searchForm.status"
+                placeholder="请选择状态"
+              >
+                <el-option
+                  label="全部"
+                  value="全部"
+                />
+                <el-option
+                  label="未支付"
+                  value="未支付"
+                />
+                <el-option
+                  label="已支付"
+                  value="已支付"
+                />
+                <el-option
+                  label="已完成"
+                  value="已完成"
+                />
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="handleSearch">查询</el-button>
+              <el-button
+                type="primary"
+                @click="handleSearch"
+                >查询</el-button
+              >
               <el-button @click="handleReset">重置</el-button>
             </el-form-item>
           </el-form>
         </template>
 
-        <el-table :data="displayOrderList" style="width: 100%">
-          <el-table-column prop="orderNo" label="订单号" width="120" />
-          <el-table-column prop="payerName" label="付款人" width="100" />
-          <el-table-column label="手机号" width="120">
+        <el-table
+          :data="displayOrderList"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="orderNo"
+            label="订单号"
+            width="120"
+          />
+          <el-table-column
+            prop="payerName"
+            label="付款人"
+            width="100"
+          />
+          <el-table-column
+            label="手机号"
+            width="120"
+          >
             <template #default="scope">
               {{ formatPhone(scope.row.payerPhone) }}
             </template>
           </el-table-column>
-          <el-table-column prop="receiverName" label="收款人" width="100" />
-          <el-table-column label="手机号" width="120">
+          <el-table-column
+            prop="receiverName"
+            label="收款人"
+            width="100"
+          />
+          <el-table-column
+            label="手机号"
+            width="120"
+          >
             <template #default="scope">
               {{ formatPhone(scope.row.receiverPhone) }}
             </template>
           </el-table-column>
-          <el-table-column prop="createTime" label="下单时间" width="180" />
-          <el-table-column label="订单状态" width="100">
+          <el-table-column
+            prop="createTime"
+            label="下单时间"
+            width="180"
+          />
+          <el-table-column
+            label="订单状态"
+            width="100"
+          >
             <template #default="scope">
               <el-tag :type="getStatusType(scope.row.status)">
                 {{ scope.row.status }}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="amount" label="订单金额" width="100">
+          <el-table-column
+            prop="amount"
+            label="订单金额"
+            width="100"
+          >
             <template #default="scope"> ¥{{ scope.row.amount }} </template>
           </el-table-column>
-          <el-table-column prop="actualAmount" label="实付金额" width="100">
+          <el-table-column
+            prop="actualAmount"
+            label="实付金额"
+            width="100"
+          >
             <template #default="scope"> ¥{{ scope.row.actualAmount }} </template>
           </el-table-column>
-          <el-table-column prop="receiveTime" label="完成时间" width="180">
+          <el-table-column
+            prop="receiveTime"
+            label="完成时间"
+            width="180"
+          >
             <template #default="scope">
               {{ scope.row.receiveTime || '—' }}
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="100">
+          <el-table-column
+            label="操作"
+            width="100"
+          >
             <template #default="scope">
-              <el-button type="primary" size="small" @click="handleView(scope.row)">
+              <el-button
+                type="primary"
+                size="small"
+                @click="handleView(scope.row)"
+              >
                 查看
               </el-button>
             </template>
@@ -80,8 +155,15 @@
       </el-card>
 
       <!-- 查看详情对话框 -->
-      <el-dialog v-model="dialogVisible" title="订单详情" width="500px">
-        <el-form :model="formData" label-width="100px">
+      <el-dialog
+        v-model="dialogVisible"
+        title="订单详情"
+        width="500px"
+      >
+        <el-form
+          :model="formData"
+          label-width="100px"
+        >
           <el-form-item label="订单号">
             <span>{{ formData.orderNo }}</span>
           </el-form-item>

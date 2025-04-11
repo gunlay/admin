@@ -14,9 +14,9 @@ export const getFileExtByBookType = (bookType: string): string | undefined => {
     case 'ods':
       return 'ods'
     case 'fods':
-      return 'fods'   
+      return 'fods'
     case 'csv':
-      return 'csv'    
+      return 'csv'
     case 'tst':
       return 'tst'
     case 'sylk':

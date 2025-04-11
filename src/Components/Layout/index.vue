@@ -8,7 +8,10 @@
         <router-view v-slot="{ Component }">
           <el-scrollbar height="100%">
             <keep-alive :include="cacheTags">
-              <component :is="Component" :key="route?.params?.id?.toString()" />
+              <component
+                :is="Component"
+                :key="route?.params?.id?.toString()"
+              />
             </keep-alive>
           </el-scrollbar>
         </router-view>

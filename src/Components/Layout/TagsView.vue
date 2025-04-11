@@ -1,14 +1,29 @@
 <template>
   <div class="tags_box">
-    <div class="tags_left_btn" @click="tagsScroll(300)">
-      <el-button plain :icon="ArrowLeft"></el-button>
+    <div
+      class="tags_left_btn"
+      @click="tagsScroll(300)"
+    >
+      <el-button
+        plain
+        :icon="ArrowLeft"
+      ></el-button>
     </div>
-    <div class="tags_right_btn" @click="tagsScroll(-300)">
-      <el-button plain :icon="ArrowRight"></el-button>
+    <div
+      class="tags_right_btn"
+      @click="tagsScroll(-300)"
+    >
+      <el-button
+        plain
+        :icon="ArrowRight"
+      ></el-button>
     </div>
     <div class="tags_close">
       <el-dropdown trigger="click">
-        <el-button plain :icon="Close"></el-button>
+        <el-button
+          plain
+          :icon="Close"
+        ></el-button>
         <template #dropdown>
           <el-dropdown-item @click="closeAll">{{ $t('closeButton.closeAll') }}</el-dropdown-item>
           <el-dropdown-item @click="closeOther">{{
@@ -21,8 +36,15 @@
         </template>
       </el-dropdown>
     </div>
-    <div class="tags_list" ref="tagsListRef">
-      <div class="tags_view" ref="tagsViewRef" :style="{ left: tagsViewLeft + 'px' }">
+    <div
+      class="tags_list"
+      ref="tagsListRef"
+    >
+      <div
+        class="tags_view"
+        ref="tagsViewRef"
+        :style="{ left: tagsViewLeft + 'px' }"
+      >
         <el-tag
           v-for="tag in tagList"
           :key="tag.fullPath"
@@ -33,7 +55,10 @@
           @click="openTagPage(tag)"
           @close="closeTagPage(tag)"
         >
-          <el-icon v-if="isStar(tag)" size="10">
+          <el-icon
+            v-if="isStar(tag)"
+            size="10"
+          >
             <star-filled />
           </el-icon>
           {{ tag.title }}

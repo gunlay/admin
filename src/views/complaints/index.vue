@@ -4,59 +4,130 @@
       <h2>投诉管理</h2>
       <el-card>
         <template #header>
-          <el-form :inline="true" :model="searchForm">
+          <el-form
+            :inline="true"
+            :model="searchForm"
+          >
             <el-form-item label="用户名">
-              <el-input v-model="searchForm.username" placeholder="请输入用户名" />
+              <el-input
+                v-model="searchForm.username"
+                placeholder="请输入用户名"
+              />
             </el-form-item>
             <el-form-item label="手机号">
-              <el-input v-model="searchForm.phone" placeholder="请输入手机号" />
+              <el-input
+                v-model="searchForm.phone"
+                placeholder="请输入手机号"
+              />
             </el-form-item>
             <el-form-item label="投诉状态">
-              <el-select v-model="searchForm.status" placeholder="请选择状态">
-                <el-option label="全部" value="全部" />
-                <el-option label="已处理" value="已处理" />
-                <el-option label="处理中" value="处理中" />
+              <el-select
+                v-model="searchForm.status"
+                placeholder="请选择状态"
+              >
+                <el-option
+                  label="全部"
+                  value="全部"
+                />
+                <el-option
+                  label="已处理"
+                  value="已处理"
+                />
+                <el-option
+                  label="处理中"
+                  value="处理中"
+                />
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="handleSearch">查询</el-button>
+              <el-button
+                type="primary"
+                @click="handleSearch"
+                >查询</el-button
+              >
               <el-button @click="handleReset">重置</el-button>
             </el-form-item>
           </el-form>
         </template>
 
-        <el-table :data="displayComplaintList" style="width: 100%">
-          <el-table-column prop="id" label="投诉编号" width="120" />
-          <el-table-column prop="complainant" label="投诉人" width="100" />
-          <el-table-column label="手机号" width="120">
+        <el-table
+          :data="displayComplaintList"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="id"
+            label="投诉编号"
+            width="120"
+          />
+          <el-table-column
+            prop="complainant"
+            label="投诉人"
+            width="100"
+          />
+          <el-table-column
+            label="手机号"
+            width="120"
+          >
             <template #default="scope">
               {{ formatPhone(scope.row.phone) }}
             </template>
           </el-table-column>
-          <el-table-column prop="defendant" label="被投诉人" width="100" />
-          <el-table-column label="手机号" width="120">
+          <el-table-column
+            prop="defendant"
+            label="被投诉人"
+            width="100"
+          />
+          <el-table-column
+            label="手机号"
+            width="120"
+          >
             <template #default="scope">
               {{ formatPhone(scope.row.defendantPhone) }}
             </template>
           </el-table-column>
-          <el-table-column prop="createTime" label="投诉时间" width="180" />
-          <el-table-column label="处理时间" width="180">
+          <el-table-column
+            prop="createTime"
+            label="投诉时间"
+            width="180"
+          />
+          <el-table-column
+            label="处理时间"
+            width="180"
+          >
             <template #default="scope">
               {{ scope.row.handleTime || '—' }}
             </template>
           </el-table-column>
-          <el-table-column prop="type" label="投诉类型" width="120" />
-          <el-table-column prop="materials" label="投诉材料" width="120" />
-          <el-table-column label="状态" width="100">
+          <el-table-column
+            prop="type"
+            label="投诉类型"
+            width="120"
+          />
+          <el-table-column
+            prop="materials"
+            label="投诉材料"
+            width="120"
+          />
+          <el-table-column
+            label="状态"
+            width="100"
+          >
             <template #default="scope">
               <el-tag :type="getStatusType(scope.row.status)">
                 {{ scope.row.status }}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="100">
+          <el-table-column
+            label="操作"
+            width="100"
+          >
             <template #default="scope">
-              <el-button type="primary" size="small" @click="handleView(scope.row)">
+              <el-button
+                type="primary"
+                size="small"
+                @click="handleView(scope.row)"
+              >
                 查看
               </el-button>
             </template>
@@ -75,8 +146,15 @@
       </el-card>
 
       <!-- 查看详情对话框 -->
-      <el-dialog v-model="dialogVisible" title="投诉详情" width="600px">
-        <el-descriptions :column="1" border>
+      <el-dialog
+        v-model="dialogVisible"
+        title="投诉详情"
+        width="600px"
+      >
+        <el-descriptions
+          :column="1"
+          border
+        >
           <el-descriptions-item label="投诉编号">
             {{ formData.id }}
           </el-descriptions-item>
@@ -100,13 +178,22 @@
               {{ formData.status }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="处理时间" v-if="formData.handleTime">
+          <el-descriptions-item
+            label="处理时间"
+            v-if="formData.handleTime"
+          >
             {{ formData.handleTime }}
           </el-descriptions-item>
-          <el-descriptions-item label="处理结果" v-if="formData.result">
+          <el-descriptions-item
+            label="处理结果"
+            v-if="formData.result"
+          >
             {{ formData.result }}
           </el-descriptions-item>
-          <el-descriptions-item label="相关图片" v-if="formData.images && formData.images.length">
+          <el-descriptions-item
+            label="相关图片"
+            v-if="formData.images && formData.images.length"
+          >
             <div class="image-list">
               <el-image
                 v-for="(url, index) in formData.images"
@@ -123,7 +210,11 @@
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="dialogVisible = false">关闭</el-button>
-            <el-button type="primary" v-if="formData.status === '处理中'" @click="handleProcess">
+            <el-button
+              type="primary"
+              v-if="formData.status === '处理中'"
+              @click="handleProcess"
+            >
               处理
             </el-button>
           </span>
@@ -131,9 +222,19 @@
       </el-dialog>
 
       <!-- 处理确认对话框 -->
-      <el-dialog v-model="processDialogVisible" title="处理投诉" width="500px">
-        <el-form :model="processForm" label-width="100px">
-          <el-form-item label="处理结果" required>
+      <el-dialog
+        v-model="processDialogVisible"
+        title="处理投诉"
+        width="500px"
+      >
+        <el-form
+          :model="processForm"
+          label-width="100px"
+        >
+          <el-form-item
+            label="处理结果"
+            required
+          >
             <el-input
               v-model="processForm.result"
               type="textarea"
@@ -145,7 +246,11 @@
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="processDialogVisible = false">取消</el-button>
-            <el-button type="primary" @click="submitProcess">确定</el-button>
+            <el-button
+              type="primary"
+              @click="submitProcess"
+              >确定</el-button
+            >
           </span>
         </template>
       </el-dialog>

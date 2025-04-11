@@ -1,5 +1,8 @@
 <template>
-  <el-aside class="navbar" :width="props.isCollapse ? '65px' : '250px'">
+  <el-aside
+    class="navbar"
+    :width="props.isCollapse ? '65px' : '250px'"
+  >
     <div
       style="
         display: flex;
@@ -10,8 +13,18 @@
       "
     >
       <div class="logo">
-        <div v-if="!props.isCollapse" class="normal">{{ fullName }}</div>
-        <div v-else class="mini">{{ abbrName }}</div>
+        <div
+          v-if="!props.isCollapse"
+          class="normal"
+        >
+          {{ fullName }}
+        </div>
+        <div
+          v-else
+          class="mini"
+        >
+          {{ abbrName }}
+        </div>
       </div>
       <div style="flex: auto; overflow-y: auto">
         <el-scrollbar height="100%">
@@ -24,7 +37,11 @@
             :collapse-transition="false"
             active-text-color="#ffffff"
           >
-            <nav-item v-for="item in menuItems" :item="item" :key="item.id" />
+            <nav-item
+              v-for="item in menuItems"
+              :item="item"
+              :key="item.id"
+            />
           </el-menu>
         </el-scrollbar>
       </div>

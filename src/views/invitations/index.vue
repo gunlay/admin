@@ -4,45 +4,111 @@
       <h2>邀请管理</h2>
       <el-card>
         <template #header>
-          <el-form :inline="true" :model="searchForm">
+          <el-form
+            :inline="true"
+            :model="searchForm"
+          >
             <el-form-item label="渠道名称">
-              <el-input v-model="searchForm.name" placeholder="请输入渠道名称" />
+              <el-input
+                v-model="searchForm.name"
+                placeholder="请输入渠道名称"
+              />
             </el-form-item>
             <el-form-item label="渠道码">
-              <el-input v-model="searchForm.code" placeholder="请输入渠道码" />
+              <el-input
+                v-model="searchForm.code"
+                placeholder="请输入渠道码"
+              />
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="handleSearch">查询</el-button>
+              <el-button
+                type="primary"
+                @click="handleSearch"
+                >查询</el-button
+              >
               <el-button @click="handleReset">重置</el-button>
-              <el-button type="success" @click="handleCreate">新建</el-button>
+              <el-button
+                type="success"
+                @click="handleCreate"
+                >新建</el-button
+              >
             </el-form-item>
           </el-form>
         </template>
 
-        <el-table :data="displayChannelList" style="width: 100%">
-          <el-table-column prop="id" label="渠道id" width="100" />
-          <el-table-column prop="name" label="渠道名称" width="120" />
-          <el-table-column prop="code" label="渠道码" width="120" />
-          <el-table-column prop="description" label="渠道描述" width="180" />
-          <el-table-column prop="createTime" label="创建时间" width="180" />
-          <el-table-column prop="expireTime" label="有效期" width="180">
+        <el-table
+          :data="displayChannelList"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="id"
+            label="渠道id"
+            width="100"
+          />
+          <el-table-column
+            prop="name"
+            label="渠道名称"
+            width="120"
+          />
+          <el-table-column
+            prop="code"
+            label="渠道码"
+            width="120"
+          />
+          <el-table-column
+            prop="description"
+            label="渠道描述"
+            width="180"
+          />
+          <el-table-column
+            prop="createTime"
+            label="创建时间"
+            width="180"
+          />
+          <el-table-column
+            prop="expireTime"
+            label="有效期"
+            width="180"
+          >
             <template #default="scope">
               {{ formatDateTime(scope.row.expireTime) }}
             </template>
           </el-table-column>
-          <el-table-column label="使用情况" width="150">
+          <el-table-column
+            label="使用情况"
+            width="150"
+          >
             <template #default="scope">
               {{ scope.row.usedCount }}/{{ scope.row.maxUses }}
             </template>
           </el-table-column>
-          <el-table-column prop="totalUsers" label="累计邀请注册用户" width="150" />
-          <el-table-column prop="yesterdayUsers" label="昨日新增注册用户" width="150" />
-          <el-table-column label="操作" width="180">
+          <el-table-column
+            prop="totalUsers"
+            label="累计邀请注册用户"
+            width="150"
+          />
+          <el-table-column
+            prop="yesterdayUsers"
+            label="昨日新增注册用户"
+            width="150"
+          />
+          <el-table-column
+            label="操作"
+            width="180"
+          >
             <template #default="scope">
-              <el-button type="primary" size="small" @click="handleView(scope.row)">
+              <el-button
+                type="primary"
+                size="small"
+                @click="handleView(scope.row)"
+              >
                 查看
               </el-button>
-              <el-button type="primary" size="small" @click="handleEdit(scope.row)">
+              <el-button
+                type="primary"
+                size="small"
+                @click="handleEdit(scope.row)"
+              >
                 编辑
               </el-button>
             </template>
@@ -65,12 +131,21 @@
           :title="dialogType === 'create' ? '新建邀请' : '编辑邀请'"
           width="500px"
         >
-          <el-form :model="formData" label-width="100px">
+          <el-form
+            :model="formData"
+            label-width="100px"
+          >
             <el-form-item label="渠道名称">
-              <el-input v-model="formData.name" placeholder="请输入渠道名称" />
+              <el-input
+                v-model="formData.name"
+                placeholder="请输入渠道名称"
+              />
             </el-form-item>
             <el-form-item label="渠道码">
-              <el-input v-model="formData.code" placeholder="请输入邀请码" />
+              <el-input
+                v-model="formData.code"
+                placeholder="请输入邀请码"
+              />
             </el-form-item>
             <el-form-item label="渠道描述">
               <el-input
@@ -89,13 +164,21 @@
               />
             </el-form-item>
             <el-form-item label="使用次数">
-              <el-input-number v-model="formData.maxUses" :min="1" placeholder="请输入可使用次数" />
+              <el-input-number
+                v-model="formData.maxUses"
+                :min="1"
+                placeholder="请输入可使用次数"
+              />
             </el-form-item>
           </el-form>
           <template #footer>
             <span class="dialog-footer">
               <el-button @click="dialogVisible = false">取消</el-button>
-              <el-button type="primary" @click="handleSubmit">确定</el-button>
+              <el-button
+                type="primary"
+                @click="handleSubmit"
+                >确定</el-button
+              >
             </span>
           </template>
         </el-dialog>

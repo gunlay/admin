@@ -2,7 +2,10 @@
   <div class="header">
     <el-header>
       <el-row>
-        <el-col :span="1" class="open_menu">
+        <el-col
+          :span="1"
+          class="open_menu"
+        >
           <div @click="menuOpenOrClose">
             <el-icon>
               <Expand v-if="props.isCollapse" />
@@ -12,12 +15,19 @@
         </el-col>
         <el-col :span="15">
           <el-breadcrumb separator="/">
-            <el-breadcrumb-item v-for="bc in breadcrumb" :key="bc.path" :to="{ path: bc.path }">
+            <el-breadcrumb-item
+              v-for="bc in breadcrumb"
+              :key="bc.path"
+              :to="{ path: bc.path }"
+            >
               {{ bc.meta.title }}
             </el-breadcrumb-item>
           </el-breadcrumb>
         </el-col>
-        <el-col :span="8" class="dropdown-container">
+        <el-col
+          :span="8"
+          class="dropdown-container"
+        >
           <div class="header-content">
             <el-dropdown>
               <span class="el-dropdown-link">

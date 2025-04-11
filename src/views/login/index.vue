@@ -5,9 +5,17 @@
         <h2>系统登录</h2>
       </template>
 
-      <el-form :model="loginForm" :rules="rules" ref="loginFormRef">
+      <el-form
+        :model="loginForm"
+        :rules="rules"
+        ref="loginFormRef"
+      >
         <el-form-item prop="username">
-          <el-input v-model="loginForm.username" placeholder="用户名" prefix-icon="User" />
+          <el-input
+            v-model="loginForm.username"
+            placeholder="用户名"
+            prefix-icon="User"
+          />
         </el-form-item>
 
         <el-form-item prop="password">
@@ -21,7 +29,13 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="handleLogin" style="width: 100%"> 登录 </el-button>
+          <el-button
+            type="primary"
+            @click="handleLogin"
+            style="width: 100%"
+          >
+            登录
+          </el-button>
         </el-form-item>
       </el-form>
     </el-card>

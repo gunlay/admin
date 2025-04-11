@@ -4,61 +4,140 @@
       <h2>发布内容管理</h2>
       <el-card>
         <template #header>
-          <el-form :inline="true" :model="searchForm">
+          <el-form
+            :inline="true"
+            :model="searchForm"
+          >
             <el-form-item label="用户名">
-              <el-input v-model="searchForm.username" placeholder="请输入用户名" />
+              <el-input
+                v-model="searchForm.username"
+                placeholder="请输入用户名"
+              />
             </el-form-item>
             <el-form-item label="手机号">
-              <el-input v-model="searchForm.phone" placeholder="请输入手机号" />
+              <el-input
+                v-model="searchForm.phone"
+                placeholder="请输入手机号"
+              />
             </el-form-item>
             <el-form-item label="用户角色">
-              <el-select v-model="searchForm.role" placeholder="请选择角色">
-                <el-option label="全部" value="全部" />
-                <el-option label="大学生" value="大学生" />
-                <el-option label="程序员" value="程序员" />
+              <el-select
+                v-model="searchForm.role"
+                placeholder="请选择角色"
+              >
+                <el-option
+                  label="全部"
+                  value="全部"
+                />
+                <el-option
+                  label="大学生"
+                  value="大学生"
+                />
+                <el-option
+                  label="程序员"
+                  value="程序员"
+                />
               </el-select>
             </el-form-item>
             <el-form-item label="发布状态">
-              <el-select v-model="searchForm.status" placeholder="请选择状态">
-                <el-option label="全部" value="全部" />
-                <el-option label="未审核" value="未审核" />
-                <el-option label="已发布" value="已发布" />
-                <el-option label="已驳回" value="已驳回" />
+              <el-select
+                v-model="searchForm.status"
+                placeholder="请选择状态"
+              >
+                <el-option
+                  label="全部"
+                  value="全部"
+                />
+                <el-option
+                  label="未审核"
+                  value="未审核"
+                />
+                <el-option
+                  label="已发布"
+                  value="已发布"
+                />
+                <el-option
+                  label="已驳回"
+                  value="已驳回"
+                />
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="handleSearch">查询</el-button>
+              <el-button
+                type="primary"
+                @click="handleSearch"
+                >查询</el-button
+              >
               <el-button @click="handleReset">重置</el-button>
             </el-form-item>
           </el-form>
         </template>
 
-        <el-table :data="displayContentList" style="width: 100%">
-          <el-table-column prop="id" label="id" width="80" />
-          <el-table-column prop="name" label="用户名" width="120" />
-          <el-table-column label="手机号" width="120">
+        <el-table
+          :data="displayContentList"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="id"
+            label="id"
+            width="80"
+          />
+          <el-table-column
+            prop="name"
+            label="用户名"
+            width="120"
+          />
+          <el-table-column
+            label="手机号"
+            width="120"
+          >
             <template #default="scope">
               {{ formatPhone(scope.row.phone) }}
             </template>
           </el-table-column>
-          <el-table-column prop="role" label="用户角色" width="100" />
-          <el-table-column prop="category" label="所属分类" width="120" />
-          <el-table-column prop="createTime" label="提交时间" width="180" />
-          <el-table-column label="发布状态" width="100">
+          <el-table-column
+            prop="role"
+            label="用户角色"
+            width="100"
+          />
+          <el-table-column
+            prop="category"
+            label="所属分类"
+            width="120"
+          />
+          <el-table-column
+            prop="createTime"
+            label="提交时间"
+            width="180"
+          />
+          <el-table-column
+            label="发布状态"
+            width="100"
+          >
             <template #default="scope">
               <el-tag :type="getStatusType(scope.row.status)">
                 {{ scope.row.status }}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="审核时间" width="180">
+          <el-table-column
+            label="审核时间"
+            width="180"
+          >
             <template #default="scope">
               {{ scope.row.auditTime || '2025.01.08 12:23:45' }}
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="100">
+          <el-table-column
+            label="操作"
+            width="100"
+          >
             <template #default="scope">
-              <el-button type="primary" size="small" @click="handleView(scope.row)">
+              <el-button
+                type="primary"
+                size="small"
+                @click="handleView(scope.row)"
+              >
                 查看
               </el-button>
             </template>
@@ -77,8 +156,15 @@
       </el-card>
 
       <!-- 查看详情对话框 -->
-      <el-dialog v-model="dialogVisible" title="内容详情" width="500px">
-        <el-form :model="formData" label-width="100px">
+      <el-dialog
+        v-model="dialogVisible"
+        title="内容详情"
+        width="500px"
+      >
+        <el-form
+          :model="formData"
+          label-width="100px"
+        >
           <el-form-item label="发布用户">
             <span>{{ formData.username }}</span>
           </el-form-item>
@@ -109,7 +195,10 @@
           <el-form-item label="审核时间">
             <span>{{ formData.auditTime }}</span>
           </el-form-item>
-          <el-form-item label="图片内容" v-if="formData.images">
+          <el-form-item
+            label="图片内容"
+            v-if="formData.images"
+          >
             <el-image
               v-for="(image, index) in formData.images"
               :key="index"
@@ -129,8 +218,16 @@
           <span class="dialog-footer">
             <el-button @click="dialogVisible = false">关闭</el-button>
             <template v-if="formData.status === '未审核'">
-              <el-button type="success" @click="handleAudit('通过')">通过</el-button>
-              <el-button type="danger" @click="handleAudit('拒绝')">拒绝</el-button>
+              <el-button
+                type="success"
+                @click="handleAudit('通过')"
+                >通过</el-button
+              >
+              <el-button
+                type="danger"
+                @click="handleAudit('拒绝')"
+                >拒绝</el-button
+              >
             </template>
           </span>
         </template>

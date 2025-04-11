@@ -4,44 +4,100 @@
       <h2>意见反馈</h2>
       <el-card>
         <template #header>
-          <el-form :inline="true" :model="searchForm">
+          <el-form
+            :inline="true"
+            :model="searchForm"
+          >
             <el-form-item label="用户名">
-              <el-input v-model="searchForm.username" placeholder="请输入用户名" />
+              <el-input
+                v-model="searchForm.username"
+                placeholder="请输入用户名"
+              />
             </el-form-item>
             <el-form-item label="状态">
-              <el-select v-model="searchForm.status" placeholder="请选择状态">
-                <el-option label="全部" value="全部" />
-                <el-option label="未处理" value="未处理" />
-                <el-option label="已处理" value="已处理" />
+              <el-select
+                v-model="searchForm.status"
+                placeholder="请选择状态"
+              >
+                <el-option
+                  label="全部"
+                  value="全部"
+                />
+                <el-option
+                  label="未处理"
+                  value="未处理"
+                />
+                <el-option
+                  label="已处理"
+                  value="已处理"
+                />
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="handleSearch">查询</el-button>
+              <el-button
+                type="primary"
+                @click="handleSearch"
+                >查询</el-button
+              >
               <el-button @click="handleReset">重置</el-button>
             </el-form-item>
           </el-form>
         </template>
 
-        <el-table :data="displayFeedbackList" style="width: 100%">
-          <el-table-column prop="id" label="ID" width="80" />
-          <el-table-column prop="username" label="用户名" width="120" />
-          <el-table-column prop="content" label="反馈内容" min-width="200" show-overflow-tooltip />
-          <el-table-column prop="createTime" label="反馈时间" width="180" />
-          <el-table-column prop="handleTime" label="处理时间" width="180">
+        <el-table
+          :data="displayFeedbackList"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="id"
+            label="ID"
+            width="80"
+          />
+          <el-table-column
+            prop="username"
+            label="用户名"
+            width="120"
+          />
+          <el-table-column
+            prop="content"
+            label="反馈内容"
+            min-width="200"
+            show-overflow-tooltip
+          />
+          <el-table-column
+            prop="createTime"
+            label="反馈时间"
+            width="180"
+          />
+          <el-table-column
+            prop="handleTime"
+            label="处理时间"
+            width="180"
+          >
             <template #default="scope">
               {{ scope.row.handleTime || '—' }}
             </template>
           </el-table-column>
-          <el-table-column label="状态" width="100">
+          <el-table-column
+            label="状态"
+            width="100"
+          >
             <template #default="scope">
               <el-tag :type="getStatusType(scope.row.status)">
                 {{ scope.row.status }}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="120">
+          <el-table-column
+            label="操作"
+            width="120"
+          >
             <template #default="scope">
-              <el-button type="primary" size="small" @click="handleView(scope.row)">
+              <el-button
+                type="primary"
+                size="small"
+                @click="handleView(scope.row)"
+              >
                 查看
               </el-button>
             </template>
@@ -64,7 +120,10 @@
           :title="formData.status === '未处理' ? '处理反馈' : '查看反馈'"
           width="600px"
         >
-          <el-descriptions :column="1" border>
+          <el-descriptions
+            :column="1"
+            border
+          >
             <el-descriptions-item label="反馈ID">
               {{ formData.id }}
             </el-descriptions-item>
@@ -82,10 +141,16 @@
                 {{ formData.status }}
               </el-tag>
             </el-descriptions-item>
-            <el-descriptions-item label="处理时间" v-if="formData.handleTime">
+            <el-descriptions-item
+              label="处理时间"
+              v-if="formData.handleTime"
+            >
               {{ formData.handleTime }}
             </el-descriptions-item>
-            <el-descriptions-item label="处理结果" v-if="formData.result">
+            <el-descriptions-item
+              label="处理结果"
+              v-if="formData.result"
+            >
               {{ formData.result }}
             </el-descriptions-item>
           </el-descriptions>
@@ -105,7 +170,11 @@
           <template #footer>
             <span class="dialog-footer">
               <el-button @click="dialogVisible = false">关闭</el-button>
-              <el-button v-if="formData.status === '未处理'" type="primary" @click="handleSubmit">
+              <el-button
+                v-if="formData.status === '未处理'"
+                type="primary"
+                @click="handleSubmit"
+              >
                 提交处理
               </el-button>
             </span>
