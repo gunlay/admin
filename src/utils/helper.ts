@@ -1,33 +1,33 @@
-import { routes } from '@/const/route';
-import { RouteLocationNormalizedLoaded, RouteMeta, RouteRecordRaw } from 'vue-router';
+import { routes } from '@/const/route'
+import { RouteLocationNormalizedLoaded, RouteMeta, RouteRecordRaw } from 'vue-router'
 
 export interface RouteFormTag {
-  name: RouteLocationNormalizedLoaded['name'];
-  fullPath: string;
-  title: string | RouteMeta['title'];
-  cache: RouteMeta['cache'];
-  closable: boolean;
+  name: RouteLocationNormalizedLoaded['name']
+  fullPath: string
+  title: string | RouteMeta['title']
+  cache: RouteMeta['cache']
+  closable: boolean
 }
 export const routeByName = (name: string) => {
-  let router: RouteLocationNormalizedLoaded;
+  let router: RouteLocationNormalizedLoaded
 
   const each = (routers: RouteRecordRaw[], name: string) => {
     for (let item of routers) {
       if (item.name === name) {
-        router = item as unknown as RouteLocationNormalizedLoaded;
+        router = item as unknown as RouteLocationNormalizedLoaded
       }
 
-      if (router) break;
+      if (router) break
 
       if (item.hasOwnProperty('children') && item.children && item.children.length > 0) {
-        each(item.children, name);
+        each(item.children, name)
       }
     }
-    return router;
-  };
+    return router
+  }
 
-  return each(routes, name);
-};
+  return each(routes, name)
+}
 // const route = useRoute()
 export const routeFormatTag = (route: RouteLocationNormalizedLoaded): RouteFormTag => {
   return {
@@ -35,33 +35,34 @@ export const routeFormatTag = (route: RouteLocationNormalizedLoaded): RouteFormT
     fullPath: route?.fullPath,
     title: route?.meta?.title || '',
     cache: route?.meta?.cache,
-    closable: !route?.meta?.notClosable,
-  };
-};
+    closable: !route?.meta?.notClosable
+  }
+}
 
 export const deepCopy = (obj: any) => {
   if (obj === null || typeof obj !== 'object') {
-    return obj;
+    return obj
   }
 
   if ('isActiveClone' in obj) {
-    throw new Error('循环引用警告⚠️');
+    throw new Error('循环引用警告⚠️')
   }
 
-  let temp: any;
+  let temp: any
   if (obj instanceof Date) {
-    temp = new obj.constructor();
+    //@ts-ignore
+    temp = new obj.constructor()
   } else {
-    temp = obj.constructor();
+    temp = obj.constructor()
   }
 
-  Object.keys(obj).forEach((key) => {
-    obj.isActiveClone = null;
-    temp[key] = deepCopy(obj[key]);
-    delete obj.isActiveClone;
-  });
-  return temp;
-};
+  Object.keys(obj).forEach(key => {
+    obj.isActiveClone = null
+    temp[key] = deepCopy(obj[key])
+    delete obj.isActiveClone
+  })
+  return temp
+}
 
 // export const getCascaderDefaultIds = (node) => {
 //   let ids = []

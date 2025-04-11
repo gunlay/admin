@@ -6,8 +6,7 @@ import 'element-plus/dist/index.css'
 import App from './App.vue'
 import router from './router'
 
-
-const pinia = createPinia();
+const pinia = createPinia()
 const app = createApp(App)
 
 // 注册所有图标
@@ -18,4 +17,4 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 app.use(ElementPlus)
 app.use(router)
 app.use(pinia)
-app.mount('#app') 
+app.mount('#app')
