@@ -1,5 +1,5 @@
 <template>
-  <el-config-provider :locale="locale">
+  <el-config-provider>
     <div class="complaints-container">
       <h2>投诉管理</h2>
       <el-card>
@@ -56,11 +56,7 @@
           </el-table-column>
           <el-table-column label="操作" width="100">
             <template #default="scope">
-              <el-button 
-                type="primary" 
-                size="small"
-                @click="handleView(scope.row)"
-              >
+              <el-button type="primary" size="small" @click="handleView(scope.row)">
                 查看
               </el-button>
             </template>
@@ -79,11 +75,7 @@
       </el-card>
 
       <!-- 查看详情对话框 -->
-      <el-dialog
-        v-model="dialogVisible"
-        title="投诉详情"
-        width="600px"
-      >
+      <el-dialog v-model="dialogVisible" title="投诉详情" width="600px">
         <el-descriptions :column="1" border>
           <el-descriptions-item label="投诉编号">
             {{ formData.id }}
@@ -131,11 +123,7 @@
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="dialogVisible = false">关闭</el-button>
-            <el-button 
-              type="primary" 
-              v-if="formData.status === '处理中'"
-              @click="handleProcess"
-            >
+            <el-button type="primary" v-if="formData.status === '处理中'" @click="handleProcess">
               处理
             </el-button>
           </span>
@@ -143,11 +131,7 @@
       </el-dialog>
 
       <!-- 处理确认对话框 -->
-      <el-dialog
-        v-model="processDialogVisible"
-        title="处理投诉"
-        width="500px"
-      >
+      <el-dialog v-model="processDialogVisible" title="处理投诉" width="500px">
         <el-form :model="processForm" label-width="100px">
           <el-form-item label="处理结果" required>
             <el-input
@@ -172,7 +156,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { ElMessage, ElConfigProvider } from 'element-plus'
-import { locale } from '../config/element-plus'
 
 const searchForm = reactive({
   username: '',
@@ -304,7 +287,7 @@ const handleView = (row: any) => {
   formData.handleTime = row.handleTime
   formData.result = row.result
   formData.images = row.images || []
-  
+
   dialogVisible.value = true
 }
 
@@ -355,9 +338,9 @@ const submitProcess = () => {
 // 获取状态标签类型
 const getStatusType = (status: string) => {
   const statusMap: Record<string, string> = {
-    '未处理': 'danger',
-    '处理中': 'warning',
-    '已处理': 'success'
+    未处理: 'danger',
+    处理中: 'warning',
+    已处理: 'success'
   }
   return statusMap[status] || 'info'
 }
@@ -366,15 +349,19 @@ const getStatusType = (status: string) => {
 const handleSearch = () => {
   // 每次都基于原始数据进行过滤
   const filteredList = originalComplaintList.filter(complaint => {
-    const matchUsername = searchForm.username ? 
-      (complaint.complainant.includes(searchForm.username) || complaint.defendant.includes(searchForm.username)) : true
-    const matchPhone = searchForm.phone ? 
-      (complaint.phone.includes(searchForm.phone) || complaint.defendantPhone.includes(searchForm.phone)) : true
+    const matchUsername = searchForm.username
+      ? complaint.complainant.includes(searchForm.username) ||
+        complaint.defendant.includes(searchForm.username)
+      : true
+    const matchPhone = searchForm.phone
+      ? complaint.phone.includes(searchForm.phone) ||
+        complaint.defendantPhone.includes(searchForm.phone)
+      : true
     const matchStatus = searchForm.status === '全部' ? true : complaint.status === searchForm.status
-    
+
     return matchUsername && matchPhone && matchStatus
   })
-  
+
   complaintList.value = filteredList
   // 重置到第一页
   currentPage.value = 1
@@ -387,12 +374,12 @@ const handleReset = () => {
   searchForm.username = ''
   searchForm.phone = ''
   searchForm.status = '全部'
-  
+
   // 重置数据为初始状态
   complaintList.value = [...originalComplaintList]
   // 重置到第一页
   currentPage.value = 1
-  
+
   ElMessage.success('重置成功')
 }
 </script>
@@ -478,4 +465,4 @@ const handleReset = () => {
   font-size: 12px;
   border-radius: 2px;
 }
-</style> 
+</style>

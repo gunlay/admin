@@ -1,5 +1,5 @@
 <template>
-  <el-aside class="navbar" :width="isCollapse ? '65px' : '250px'">
+  <el-aside class="navbar" :width="props.isCollapse ? '65px' : '250px'">
     <div
       style="
         display: flex;
@@ -10,14 +10,14 @@
       "
     >
       <div class="logo">
-        <div v-if="!isCollapse" class="normal">{{ fullName }}</div>
+        <div v-if="!props.isCollapse" class="normal">{{ fullName }}</div>
         <div v-else class="mini">{{ abbrName }}</div>
       </div>
       <div style="flex: auto; overflow-y: auto">
         <el-scrollbar height="100%">
           <el-menu
             class="el_menu_vertical"
-            :collapse="isCollapse"
+            :collapse="props.isCollapse"
             :router="true"
             background-color="#263238"
             text-color="#afb5bd"
@@ -37,9 +37,9 @@ import { ref } from 'vue'
 import { ElAside, ElMenu, ElScrollbar } from 'element-plus'
 import config from '@/config'
 import NavItem from './NavItem.vue'
-import { menuList } from '@/const/menu'
+import menuList from '@/const/menu'
 
-defineProps({
+const props = defineProps({
   isCollapse: {
     type: Boolean,
     default: false

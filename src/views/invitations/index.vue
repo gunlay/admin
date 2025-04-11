@@ -1,5 +1,5 @@
 <template>
-  <el-config-provider :locale="locale">
+  <el-config-provider>
     <div class="channels-container">
       <h2>邀请管理</h2>
       <el-card>
@@ -39,18 +39,10 @@
           <el-table-column prop="yesterdayUsers" label="昨日新增注册用户" width="150" />
           <el-table-column label="操作" width="180">
             <template #default="scope">
-              <el-button 
-                type="primary" 
-                size="small"
-                @click="handleView(scope.row)"
-              >
+              <el-button type="primary" size="small" @click="handleView(scope.row)">
                 查看
               </el-button>
-              <el-button 
-                type="primary" 
-                size="small"
-                @click="handleEdit(scope.row)"
-              >
+              <el-button type="primary" size="small" @click="handleEdit(scope.row)">
                 编辑
               </el-button>
             </template>
@@ -81,8 +73,8 @@
               <el-input v-model="formData.code" placeholder="请输入邀请码" />
             </el-form-item>
             <el-form-item label="渠道描述">
-              <el-input 
-                v-model="formData.description" 
+              <el-input
+                v-model="formData.description"
                 type="textarea"
                 :rows="3"
                 placeholder="请输入渠道描述"
@@ -97,11 +89,7 @@
               />
             </el-form-item>
             <el-form-item label="使用次数">
-              <el-input-number 
-                v-model="formData.maxUses" 
-                :min="1"
-                placeholder="请输入可使用次数"
-              />
+              <el-input-number v-model="formData.maxUses" :min="1" placeholder="请输入可使用次数" />
             </el-form-item>
           </el-form>
           <template #footer>
@@ -119,7 +107,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { ElMessage, ElConfigProvider } from 'element-plus'
-import { locale } from '../config/element-plus'
 
 const searchForm = reactive({
   name: '',
@@ -241,7 +228,7 @@ const handleEdit = (row: any) => {
   formData.maxUses = row.maxUses
   // 保存当前编辑的记录ID
   formData.id = row.id
-  
+
   dialogVisible.value = true
 }
 
@@ -251,10 +238,10 @@ const handleSearch = () => {
   const filteredList = originalChannelList.filter(channel => {
     const matchName = searchForm.name ? channel.name.includes(searchForm.name) : true
     const matchCode = searchForm.code ? channel.code.includes(searchForm.code) : true
-    
+
     return matchName && matchCode
   })
-  
+
   channelList.value = filteredList
   // 重置到第一页
   currentPage.value = 1
@@ -266,12 +253,12 @@ const handleReset = () => {
   // 重置表单
   searchForm.name = ''
   searchForm.code = ''
-  
+
   // 重置数据为初始状态
   channelList.value = [...originalChannelList]
   // 重置到第一页
   currentPage.value = 1
-  
+
   ElMessage.success('重置成功')
 }
 
@@ -321,7 +308,7 @@ const handleSubmit = () => {
       totalUsers: 0,
       yesterdayUsers: 0
     }
-    
+
     channelList.value.unshift(newInvitation)
     ElMessage.success('创建成功')
   } else {
@@ -338,17 +325,17 @@ const handleSubmit = () => {
         maxUses: formData.maxUses
       }
       channelList.value[index] = updatedChannel
-      
+
       // 同步更新原始数据列表
       const originalIndex = originalChannelList.findIndex(item => item.id === formData.id)
       if (originalIndex > -1) {
         originalChannelList[originalIndex] = updatedChannel
       }
-      
+
       ElMessage.success('更新成功')
     }
   }
-  
+
   dialogVisible.value = false
 }
 </script>
@@ -416,4 +403,4 @@ const handleSubmit = () => {
   font-size: 12px;
   border-radius: 2px;
 }
-</style> 
+</style>

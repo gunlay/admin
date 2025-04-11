@@ -1,5 +1,5 @@
 <template>
-  <el-config-provider :locale="locale">
+  <el-config-provider>
     <div class="help-settings-container">
       <h2>帮助中心配置</h2>
       <el-card>
@@ -42,25 +42,13 @@
           </el-table-column>
           <el-table-column label="操作" width="220">
             <template #default="scope">
-              <el-button 
-                type="primary" 
-                size="small"
-                @click="handleEdit(scope.row)"
-              >
+              <el-button type="primary" size="small" @click="handleEdit(scope.row)">
                 编辑
               </el-button>
-              <el-button 
-                type="primary" 
-                size="small"
-                @click="handleView(scope.row)"
-              >
+              <el-button type="primary" size="small" @click="handleView(scope.row)">
                 查看
               </el-button>
-              <el-button 
-                type="danger" 
-                size="small"
-                @click="handleDelete(scope.row)"
-              >
+              <el-button type="danger" size="small" @click="handleDelete(scope.row)">
                 删除
               </el-button>
             </template>
@@ -118,11 +106,7 @@
         </el-dialog>
 
         <!-- 删除确认对话框 -->
-        <el-dialog
-          v-model="deleteDialogVisible"
-          title="确认删除"
-          width="400px"
-        >
+        <el-dialog v-model="deleteDialogVisible" title="确认删除" width="400px">
           <div>确定要删除该帮助文档吗？</div>
           <div class="delete-info">
             <p>标题：{{ deleteItem?.title }}</p>
@@ -143,7 +127,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed, shallowRef } from 'vue'
 import { ElMessage, ElConfigProvider } from 'element-plus'
-import { locale } from '../config/element-plus'
 
 interface HelpDoc {
   id: number
@@ -186,7 +169,8 @@ const searchForm = reactive({
 const filteredHelpList = computed(() => {
   return helpList.value.filter(help => {
     const matchTitle = searchForm.title ? help.title.includes(searchForm.title) : true
-    const matchCategory = searchForm.category === '全部' ? true : help.category === searchForm.category
+    const matchCategory =
+      searchForm.category === '全部' ? true : help.category === searchForm.category
     return matchTitle && matchCategory
   })
 })
@@ -226,13 +210,16 @@ const handleSubmit = () => {
     title: formData.title,
     category: formData.category,
     content: formData.content,
-    createTime: dialogType.value === 'create' ? now : helpList.value.find(item => item.id === formData.id)?.createTime || now,
+    createTime:
+      dialogType.value === 'create'
+        ? now
+        : helpList.value.find(item => item.id === formData.id)?.createTime || now,
     updateTime: now,
     status: formData.status
   }
 
   const newList = [...helpList.value]
-  
+
   if (dialogType.value === 'create') {
     newList.unshift(helpData)
   } else {
@@ -241,7 +228,7 @@ const handleSubmit = () => {
       newList[index] = helpData
     }
   }
-  
+
   helpList.value = newList
   ElMessage.success(dialogType.value === 'create' ? '创建成功' : '更新成功')
   dialogVisible.value = false
@@ -258,10 +245,10 @@ const handleDelete = (row: HelpDoc) => {
 
 const confirmDelete = () => {
   if (!deleteItem.value) return
-  
+
   const newList = helpList.value.filter(item => item.id !== deleteItem.value!.id)
   helpList.value = newList
-  
+
   ElMessage.success('删除成功')
   deleteDialogVisible.value = false
   deleteItem.value = null
@@ -384,7 +371,7 @@ const handleStatusChange = (row: HelpDoc) => {
   padding: 10px;
   background-color: var(--el-fill-color-light);
   border-radius: 4px;
-  
+
   p {
     margin: 5px 0;
     color: var(--el-text-color-regular);
@@ -395,10 +382,10 @@ const handleStatusChange = (row: HelpDoc) => {
   padding: 4px 8px;
   height: auto;
   margin: 0 4px;
-  
+
   &.el-button--danger {
     color: var(--el-color-danger);
-    
+
     &:hover {
       color: var(--el-color-danger-light-3);
     }
@@ -423,4 +410,4 @@ const handleStatusChange = (row: HelpDoc) => {
   font-size: 12px;
   border-radius: 2px;
 }
-</style> 
+</style>

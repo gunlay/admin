@@ -56,6 +56,15 @@ export class Request {
       method: 'post'
     }) as unknown as Promise<Result<T>>
   }
+  get<T = unknown>(url: string, params?: Record<string, JSONValue>, config?: Config) {
+    return this.instance.request<Result<T>>({
+      showLoading: true,
+      ...config,
+      url,
+      params,
+      method: 'get'
+    }) as unknown as Promise<Result<T>>
+  }
 }
 
 const request = new Request('http://localhost:3000/')

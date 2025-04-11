@@ -1,4 +1,4 @@
-import { routes } from '@/const/route'
+import routes from '@/const/route'
 import { RouteLocationNormalizedLoaded, RouteMeta, RouteRecordRaw } from 'vue-router'
 
 export interface RouteFormTag {

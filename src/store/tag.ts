@@ -1,7 +1,7 @@
 import { defineStore, _GettersTree } from 'pinia'
 import config from '@/config/index'
 import { routeByName, routeFormatTag, RouteFormTag } from '@/utils/helper'
-import { router } from '@/const/route'
+import router from '@/const/route'
 
 interface TagState {
   tagList: RouteFormTag[]

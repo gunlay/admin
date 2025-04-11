@@ -1,5 +1,5 @@
 <template>
-  <el-config-provider :locale="locale">
+  <el-config-provider>
     <div class="coupons-container">
       <h2>券码管理</h2>
       <el-card>
@@ -9,7 +9,7 @@
               <el-input v-model="searchForm.code" placeholder="请输入券码" />
             </el-form-item>
             <el-form-item label="状态">
-              <el-select v-model="searchForm.status" placeholder="请选择状态" style="width: 120px;">
+              <el-select v-model="searchForm.status" placeholder="请选择状态" style="width: 120px">
                 <el-option label="全部" value="全部" />
                 <el-option label="未生效" value="未生效" />
                 <el-option label="已生效" value="已生效" />
@@ -41,18 +41,10 @@
           </el-table-column>
           <el-table-column label="操作" width="180">
             <template #default="scope">
-              <el-button 
-                type="primary" 
-                size="small"
-                @click="handleView(scope.row)"
-              >
+              <el-button type="primary" size="small" @click="handleView(scope.row)">
                 查看
               </el-button>
-              <el-button 
-                type="primary" 
-                size="small"
-                @click="handleEdit(scope.row)"
-              >
+              <el-button type="primary" size="small" @click="handleEdit(scope.row)">
                 修改
               </el-button>
             </template>
@@ -90,44 +82,40 @@
             </el-form-item>
             <el-form-item label="券码面额">
               <template v-if="formData.type === '满减券'">
-                <el-input 
-                  v-model="formData.fullAmount" 
+                <el-input
+                  v-model="formData.fullAmount"
                   placeholder="请输入满足金额"
-                  style="width: 45%;"
+                  style="width: 45%"
                 >
                   <template #prepend>满</template>
                   <template #append>元</template>
                 </el-input>
-                <span style="margin: 0 10px;">减</span>
-                <el-input 
-                  v-model="formData.reduceAmount" 
+                <span style="margin: 0 10px">减</span>
+                <el-input
+                  v-model="formData.reduceAmount"
                   placeholder="请输入优惠金额"
-                  style="width: 45%;"
+                  style="width: 45%"
                 >
                   <template #append>元</template>
                 </el-input>
               </template>
               <template v-else>
-                <el-input 
-                  v-model="formData.discount" 
-                  placeholder="请输入折扣"
-                  style="width: 45%;"
-                >
+                <el-input v-model="formData.discount" placeholder="请输入折扣" style="width: 45%">
                   <template #append>折</template>
                 </el-input>
-                <span style="margin: 0 10px;">封顶</span>
-                <el-input 
-                  v-model="formData.maxDiscount" 
+                <span style="margin: 0 10px">封顶</span>
+                <el-input
+                  v-model="formData.maxDiscount"
                   placeholder="请输入封顶金额"
-                  style="width: 45%;"
+                  style="width: 45%"
                 >
                   <template #append>元</template>
                 </el-input>
               </template>
             </el-form-item>
             <el-form-item label="券码描述">
-              <el-input 
-                v-model="formData.description" 
+              <el-input
+                v-model="formData.description"
                 type="textarea"
                 :rows="3"
                 placeholder="请输入券码描述"
@@ -165,7 +153,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { ElMessage, ElConfigProvider } from 'element-plus'
-import { locale } from '../config/element-plus'
 
 const searchForm = reactive({
   code: '',
@@ -189,7 +176,7 @@ const getCouponStatus = (createTime: string, validPeriod: string) => {
   const now = new Date().getTime()
   const startTime = new Date(createTime.replace(/\./g, '/')).getTime()
   const endTime = new Date(validPeriod.replace('截止', '').replace(/\./g, '/')).getTime()
-  
+
   if (now < startTime) {
     return '未生效'
   } else if (now > endTime) {
@@ -240,18 +227,20 @@ const originalCouponList = [
 ]
 
 // 初始化列表数据时计算状态
-const couponList = ref(originalCouponList.map(coupon => ({
-  ...coupon,
-  status: getCouponStatus(coupon.createTime, coupon.validPeriod)
-})))
+const couponList = ref(
+  originalCouponList.map(coupon => ({
+    ...coupon,
+    status: getCouponStatus(coupon.createTime, coupon.validPeriod)
+  }))
+)
 
 // 获取状态标签类型
 const getStatusType = (status: string) => {
   const statusMap: Record<string, string> = {
-    '已生效': 'success',
-    '未生效': 'warning',
-    '已过期': 'info',
-    '已下线': 'danger'
+    已生效: 'success',
+    未生效: 'warning',
+    已过期: 'info',
+    已下线: 'danger'
   }
   return statusMap[status] || 'info'
 }
@@ -267,10 +256,10 @@ const handleSearch = () => {
   const filteredList = originalCouponList.filter(coupon => {
     const matchCode = searchForm.code ? coupon.code.includes(searchForm.code) : true
     const matchStatus = searchForm.status === '全部' ? true : coupon.status === searchForm.status
-    
+
     return matchCode && matchStatus
   })
-  
+
   couponList.value = filteredList.map(coupon => ({
     ...coupon,
     status: getCouponStatus(coupon.createTime, coupon.validPeriod)
@@ -285,7 +274,7 @@ const handleReset = () => {
   // 重置表单
   searchForm.code = ''
   searchForm.status = '全部'
-  
+
   // 重置数据为初始状态
   couponList.value = [...originalCouponList].map(coupon => ({
     ...coupon,
@@ -293,7 +282,7 @@ const handleReset = () => {
   }))
   // 重置到第一页
   currentPage.value = 1
-  
+
   ElMessage.success('重置成功')
 }
 
@@ -364,16 +353,21 @@ const handleEdit = (row: any) => {
   formData.createTime = row.createTime
   formData.expireTime = row.validPeriod.replace('截止', '')
   formData.status = row.status
-  
+
   dialogVisible.value = true
 }
 
 // 修改提交处理方法
 const handleSubmit = () => {
-  if (!formData.name || !formData.code || !formData.type || 
-      (formData.type === '打折券' && (!formData.discount || !formData.maxDiscount)) ||
-      (formData.type === '满减券' && (!formData.fullAmount || !formData.reduceAmount)) ||
-      !formData.createTime || !formData.expireTime) {
+  if (
+    !formData.name ||
+    !formData.code ||
+    !formData.type ||
+    (formData.type === '打折券' && (!formData.discount || !formData.maxDiscount)) ||
+    (formData.type === '满减券' && (!formData.fullAmount || !formData.reduceAmount)) ||
+    !formData.createTime ||
+    !formData.expireTime
+  ) {
     ElMessage.warning('请填写完整信息')
     return
   }
@@ -385,11 +379,12 @@ const handleSubmit = () => {
     code: formData.code,
     name: formData.name,
     type: formData.type,
-    amount: formData.type === '打折券' ? 
-      `${formData.discount}折${formData.maxDiscount}封顶` : 
-      formData.fullAmount === '0' ? 
-        `无门槛减${formData.reduceAmount}` : 
-        `满${formData.fullAmount}元减${formData.reduceAmount}`,
+    amount:
+      formData.type === '打折券'
+        ? `${formData.discount}折${formData.maxDiscount}封顶`
+        : formData.fullAmount === '0'
+          ? `无门槛减${formData.reduceAmount}`
+          : `满${formData.fullAmount}元减${formData.reduceAmount}`,
     description: formData.description || '',
     createTime: createTimeStr,
     validPeriod: validPeriodStr,
@@ -404,23 +399,23 @@ const handleSubmit = () => {
     // 编辑逻辑
     const index = couponList.value.findIndex(item => item.code === formData.id)
     if (index > -1) {
-      couponList.value[index] = { 
-        ...couponList.value[index], 
+      couponList.value[index] = {
+        ...couponList.value[index],
         ...couponData
       }
-      
+
       // 同步更新原始数据列表
       const originalIndex = originalCouponList.findIndex(item => item.code === formData.id)
       if (originalIndex > -1) {
-        originalCouponList[originalIndex] = { 
-          ...originalCouponList[originalIndex], 
+        originalCouponList[originalIndex] = {
+          ...originalCouponList[originalIndex],
           ...couponData
         }
       }
       ElMessage.success('修改成功')
     }
   }
-  
+
   dialogVisible.value = false
 }
 </script>
@@ -493,7 +488,7 @@ const handleSubmit = () => {
 :deep(.el-dialog) {
   .el-input {
     width: 100% !important;
-    
+
     &.el-input--small {
       width: 45% !important;
     }
@@ -509,4 +504,4 @@ const handleSubmit = () => {
   font-size: 12px;
   border-radius: 2px;
 }
-</style> 
+</style>

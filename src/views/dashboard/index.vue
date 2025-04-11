@@ -13,7 +13,7 @@
           </div>
         </el-card>
       </el-col>
-      
+
       <el-col :span="6">
         <el-card>
           <template #header>
@@ -26,7 +26,7 @@
           </div>
         </el-card>
       </el-col>
-      
+
       <el-col :span="6">
         <el-card>
           <template #header>
@@ -39,7 +39,7 @@
           </div>
         </el-card>
       </el-col>
-      
+
       <el-col :span="6">
         <el-card>
           <template #header>
@@ -64,4 +64,4 @@
 .card-content {
   text-align: center;
 }
-</style> 
+</style>

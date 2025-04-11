@@ -1,5 +1,5 @@
 <template>
-  <el-config-provider :locale="locale">
+  <el-config-provider>
     <div class="users-container">
       <h2>用户管理</h2>
       <el-card>
@@ -44,9 +44,7 @@
           <el-table-column prop="createTime" label="注册时间" width="180" />
           <el-table-column label="认证状态" width="100">
             <template #default="scope">
-              <el-tag 
-                :type="getAuthStatusType(scope.row.authStatus)"
-              >
+              <el-tag :type="getAuthStatusType(scope.row.authStatus)">
                 {{ scope.row.authStatus || '—' }}
               </el-tag>
             </template>
@@ -61,8 +59,8 @@
           <el-table-column label="操作" width="200">
             <template #default="scope">
               <el-button type="primary" size="small" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button 
-                :type="scope.row.status === '正常' ? 'danger' : 'success'" 
+              <el-button
+                :type="scope.row.status === '正常' ? 'danger' : 'success'"
                 size="small"
                 @click="handleStatusChange(scope.row)"
               >
@@ -84,11 +82,7 @@
       </el-card>
 
       <!-- 编辑用户对话框 -->
-      <el-dialog
-        v-model="dialogVisible"
-        title="编辑用户"
-        width="500px"
-      >
+      <el-dialog v-model="dialogVisible" title="编辑用户" width="500px">
         <el-form :model="formData" label-width="100px">
           <el-form-item label="用户名">
             <el-input v-model="formData.name" disabled />
@@ -112,17 +106,13 @@
       </el-dialog>
 
       <!-- 禁用用户对话框 -->
-      <el-dialog
-        v-model="disableDialogVisible"
-        title="禁用用户"
-        width="30%"
-      >
+      <el-dialog v-model="disableDialogVisible" title="禁用用户" width="30%">
         <div class="disable-dialog-content">
           <p>确定要禁用该用户吗？</p>
           <el-form :model="disableForm">
             <el-form-item label="禁用时长">
-              <el-input-number 
-                v-model="disableForm.duration" 
+              <el-input-number
+                v-model="disableForm.duration"
                 :min="1"
                 :max="365"
                 placeholder="请输入禁用天数"
@@ -146,7 +136,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { ElMessage, ElMessageBox, ElConfigProvider } from 'element-plus'
-import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 
 const searchForm = reactive({
   username: '',
@@ -212,18 +201,6 @@ const disableForm = ref({
   duration: 7 // 默认禁用7天
 })
 
-// 自定义国际化配置
-const locale = {
-  ...zhCn,
-  el: {
-    ...zhCn.el,
-    pagination: {
-      ...zhCn.el.pagination,
-      pagesize: '条/页'
-    }
-  }
-}
-
 // 手机号中间4位隐藏处理
 const formatPhone = (phone: string) => {
   if (!phone) return ''
@@ -233,8 +210,8 @@ const formatPhone = (phone: string) => {
 // 获取认证状态标签类型
 const getAuthStatusType = (status: string) => {
   const statusMap: Record<string, string> = {
-    '已认证': 'success',
-    '未认证': 'warning',
+    已认证: 'success',
+    未认证: 'warning',
     '': 'info'
   }
   return statusMap[status] || 'info'
@@ -259,15 +236,11 @@ const handleStatusChange = (row: any) => {
     disableDialogVisible.value = true
   } else {
     // 如果是启用操作，直接确认
-    ElMessageBox.confirm(
-      '确定要启用该用户吗？',
-      '提示',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }
-    ).then(() => {
+    ElMessageBox.confirm('确定要启用该用户吗？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(() => {
       row.status = '正常'
       ElMessage.success('启用成功')
     })
@@ -318,11 +291,12 @@ const handleSearch = () => {
     const matchUsername = searchForm.username ? user.name.includes(searchForm.username) : true
     const matchPhone = searchForm.phone ? user.phone.includes(searchForm.phone) : true
     const matchRole = searchForm.role === '全部' ? true : user.role === searchForm.role
-    const matchAuthStatus = searchForm.authStatus === '全部' ? true : user.authStatus === searchForm.authStatus
-    
+    const matchAuthStatus =
+      searchForm.authStatus === '全部' ? true : user.authStatus === searchForm.authStatus
+
     return matchUsername && matchPhone && matchRole && matchAuthStatus
   })
-  
+
   userList.value = filteredList
   // 重置到第一页
   currentPage.value = 1
@@ -336,23 +310,23 @@ const handleReset = () => {
   searchForm.phone = ''
   searchForm.role = '全部'
   searchForm.authStatus = '全部'
-  
+
   // 重置数据为初始状态
   userList.value = [...originalUserList]
   // 重置到第一页
   currentPage.value = 1
-  
+
   ElMessage.success('重置成功')
 }
 
 // 修改确认禁用方法
 const confirmDisable = () => {
   if (!currentUser.value) return
-  
+
   currentUser.value.status = `已封禁 剩余${disableForm.value.duration}天`
   ElMessage.success('禁用成功')
   disableDialogVisible.value = false
-  
+
   // 如果有实际的 API 调用，可以使用下面的代码
   // try {
   //   await userApi.disableUser({
@@ -405,18 +379,18 @@ const confirmDisable = () => {
 /* 修改分页下拉框的选项文本 */
 :deep(.el-select-dropdown__item) {
   &::after {
-    content: "条/页";
+    content: '条/页';
   }
 }
 
 /* 修改当前选中项的显示 */
 :deep(.el-input__inner) {
   &::after {
-    content: "条/页";
+    content: '条/页';
   }
 }
 
 .disable-dialog-content {
   padding: 20px 0;
 }
-</style> 
+</style>

@@ -6,8 +6,8 @@ export default {
   guardNames: [
     {
       label: 'admin',
-      value: 'admin',
-    },
+      value: 'admin'
+    }
   ],
 
   showAuthorGitHubUrl: true,
@@ -22,7 +22,7 @@ export default {
 
   dashboardFullPath: '/dashboard',
 
-  fullName: 'Mojito Admin',
+  fullName: 'Code Platform',
 
-  abbrName: 'Mojito',
-};
+  abbrName: 'Code'
+}

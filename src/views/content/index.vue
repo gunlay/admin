@@ -1,5 +1,5 @@
 <template>
-  <el-config-provider :locale="locale">
+  <el-config-provider>
     <div class="content-container">
       <h2>发布内容管理</h2>
       <el-card>
@@ -58,11 +58,7 @@
           </el-table-column>
           <el-table-column label="操作" width="100">
             <template #default="scope">
-              <el-button 
-                type="primary" 
-                size="small"
-                @click="handleView(scope.row)"
-              >
+              <el-button type="primary" size="small" @click="handleView(scope.row)">
                 查看
               </el-button>
             </template>
@@ -81,11 +77,7 @@
       </el-card>
 
       <!-- 查看详情对话框 -->
-      <el-dialog
-        v-model="dialogVisible"
-        title="内容详情"
-        width="500px"
-      >
+      <el-dialog v-model="dialogVisible" title="内容详情" width="500px">
         <el-form :model="formData" label-width="100px">
           <el-form-item label="发布用户">
             <span>{{ formData.username }}</span>
@@ -150,7 +142,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { ElMessage, ElMessageBox, ElConfigProvider } from 'element-plus'
-import { locale } from '../config/element-plus'
 
 const searchForm = reactive({
   username: '',
@@ -249,9 +240,9 @@ const formatPhone = (phone: string) => {
 // 获取状态标签类型
 const getStatusType = (status: string) => {
   const statusMap: Record<string, string> = {
-    '未审核': 'warning',
-    '已发布': 'success',
-    '已驳回': 'danger'
+    未审核: 'warning',
+    已发布: 'success',
+    已驳回: 'danger'
   }
   return statusMap[status] || 'info'
 }
@@ -274,33 +265,31 @@ const handleView = (row: any) => {
 
 // 审核处理方法
 const handleAudit = (action: '通过' | '拒绝') => {
-  ElMessageBox.confirm(
-    `确定要${action}该内容吗？`,
-    '提示',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: action === '通过' ? 'success' : 'warning'
-    }
-  ).then(() => {
+  ElMessageBox.confirm(`确定要${action}该内容吗？`, '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: action === '通过' ? 'success' : 'warning'
+  }).then(() => {
     // 更新状态映射
     const newStatus = action === '通过' ? '已发布' : '已驳回'
     formData.status = newStatus
-    
+
     // 同步更新列表中的数据
     const record = contentList.value.find(item => item.id === formData.id)
     if (record) {
       record.status = newStatus
-      record.auditTime = new Date().toLocaleString('zh-CN', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      }).replace(/\//g, '.')
+      record.auditTime = new Date()
+        .toLocaleString('zh-CN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        })
+        .replace(/\//g, '.')
     }
-    
+
     ElMessage.success(`审核${action}成功`)
     dialogVisible.value = false
   })
@@ -321,10 +310,10 @@ const handleSearch = () => {
     const matchPhone = searchForm.phone ? content.phone.includes(searchForm.phone) : true
     const matchRole = searchForm.role === '全部' ? true : content.role === searchForm.role
     const matchStatus = searchForm.status === '全部' ? true : content.status === searchForm.status
-    
+
     return matchUsername && matchPhone && matchRole && matchStatus
   })
-  
+
   contentList.value = filteredList
   // 重置到第一页
   currentPage.value = 1
@@ -338,12 +327,12 @@ const handleReset = () => {
   searchForm.phone = ''
   searchForm.role = '全部'
   searchForm.status = '全部'
-  
+
   // 重置数据为初始状态
   contentList.value = [...originalContentList]
   // 重置到第一页
   currentPage.value = 1
-  
+
   ElMessage.success('重置成功')
 }
 </script>
@@ -407,4 +396,4 @@ const handleReset = () => {
   font-size: 12px;
   border-radius: 2px;
 }
-</style> 
+</style>

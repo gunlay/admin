@@ -1,5 +1,5 @@
 <template>
-  <el-config-provider :locale="locale">
+  <el-config-provider>
     <div class="feedback-container">
       <h2>意见反馈</h2>
       <el-card>
@@ -41,11 +41,7 @@
           </el-table-column>
           <el-table-column label="操作" width="120">
             <template #default="scope">
-              <el-button 
-                type="primary" 
-                size="small"
-                @click="handleView(scope.row)"
-              >
+              <el-button type="primary" size="small" @click="handleView(scope.row)">
                 查看
               </el-button>
             </template>
@@ -109,11 +105,7 @@
           <template #footer>
             <span class="dialog-footer">
               <el-button @click="dialogVisible = false">关闭</el-button>
-              <el-button 
-                v-if="formData.status === '未处理'"
-                type="primary" 
-                @click="handleSubmit"
-              >
+              <el-button v-if="formData.status === '未处理'" type="primary" @click="handleSubmit">
                 提交处理
               </el-button>
             </span>
@@ -127,7 +119,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { ElMessage, ElConfigProvider } from 'element-plus'
-import { locale } from '../config/element-plus'
 
 interface Feedback {
   id: number
@@ -167,7 +158,9 @@ const searchForm = reactive({
 // 过滤后的列表
 const filteredFeedbackList = computed(() => {
   return feedbackList.value.filter(feedback => {
-    const matchUsername = searchForm.username ? feedback.username.includes(searchForm.username) : true
+    const matchUsername = searchForm.username
+      ? feedback.username.includes(searchForm.username)
+      : true
     const matchStatus = searchForm.status === '全部' ? true : feedback.status === searchForm.status
     return matchUsername && matchStatus
   })
@@ -210,7 +203,7 @@ const handleSubmit = () => {
 
   const now = new Date().toLocaleString('zh-CN').replace(/\//g, '.')
   const index = feedbackList.value.findIndex(item => item.id === formData.id)
-  
+
   if (index > -1) {
     const newList = [...feedbackList.value]
     newList[index] = {
@@ -330,4 +323,4 @@ const getStatusType = (status: string) => {
   font-size: 12px;
   border-radius: 2px;
 }
-</style> 
+</style>

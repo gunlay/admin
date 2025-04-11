@@ -1,5 +1,5 @@
 <template>
-  <el-config-provider :locale="locale">
+  <el-config-provider>
     <div class="orders-container">
       <h2>订单管理</h2>
       <el-card>
@@ -49,14 +49,10 @@
             </template>
           </el-table-column>
           <el-table-column prop="amount" label="订单金额" width="100">
-            <template #default="scope">
-              ¥{{ scope.row.amount }}
-            </template>
+            <template #default="scope"> ¥{{ scope.row.amount }} </template>
           </el-table-column>
           <el-table-column prop="actualAmount" label="实付金额" width="100">
-            <template #default="scope">
-              ¥{{ scope.row.actualAmount }}
-            </template>
+            <template #default="scope"> ¥{{ scope.row.actualAmount }} </template>
           </el-table-column>
           <el-table-column prop="receiveTime" label="完成时间" width="180">
             <template #default="scope">
@@ -65,11 +61,7 @@
           </el-table-column>
           <el-table-column label="操作" width="100">
             <template #default="scope">
-              <el-button 
-                type="primary" 
-                size="small"
-                @click="handleView(scope.row)"
-              >
+              <el-button type="primary" size="small" @click="handleView(scope.row)">
                 查看
               </el-button>
             </template>
@@ -88,11 +80,7 @@
       </el-card>
 
       <!-- 查看详情对话框 -->
-      <el-dialog
-        v-model="dialogVisible"
-        title="订单详情"
-        width="500px"
-      >
+      <el-dialog v-model="dialogVisible" title="订单详情" width="500px">
         <el-form :model="formData" label-width="100px">
           <el-form-item label="订单号">
             <span>{{ formData.orderNo }}</span>
@@ -138,7 +126,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { ElMessage, ElConfigProvider } from 'element-plus'
-import { locale } from '../config/element-plus'
 
 const searchForm = reactive({
   username: '',
@@ -273,9 +260,9 @@ const formatPhone = (phone: string) => {
 // 获取状态标签类型
 const getStatusType = (status: string) => {
   const statusMap: Record<string, string> = {
-    '未支付': 'warning',
-    '已支付': 'success',
-    '已完成': 'info'
+    未支付: 'warning',
+    已支付: 'success',
+    已完成: 'info'
   }
   return statusMap[status] || 'info'
 }
@@ -299,15 +286,19 @@ const handleView = (row: any) => {
 const handleSearch = () => {
   // 每次都基于原始数据进行过滤
   const filteredList = originalOrderList.filter(order => {
-    const matchUsername = searchForm.username ? 
-      (order.payerName.includes(searchForm.username) || order.receiverName.includes(searchForm.username)) : true
-    const matchPhone = searchForm.phone ? 
-      (order.payerPhone.includes(searchForm.phone) || order.receiverPhone.includes(searchForm.phone)) : true
+    const matchUsername = searchForm.username
+      ? order.payerName.includes(searchForm.username) ||
+        order.receiverName.includes(searchForm.username)
+      : true
+    const matchPhone = searchForm.phone
+      ? order.payerPhone.includes(searchForm.phone) ||
+        order.receiverPhone.includes(searchForm.phone)
+      : true
     const matchStatus = searchForm.status === '全部' ? true : order.status === searchForm.status
-    
+
     return matchUsername && matchPhone && matchStatus
   })
-  
+
   orderList.value = filteredList
   // 重置到第一页
   currentPage.value = 1
@@ -320,12 +311,12 @@ const handleReset = () => {
   searchForm.username = ''
   searchForm.phone = ''
   searchForm.status = '全部'
-  
+
   // 重置数据为初始状态
   orderList.value = [...originalOrderList]
   // 重置到第一页
   currentPage.value = 1
-  
+
   ElMessage.success('重置成功')
 }
 </script>
@@ -376,4 +367,4 @@ const handleReset = () => {
   font-size: 12px;
   border-radius: 2px;
 }
-</style> 
+</style>
