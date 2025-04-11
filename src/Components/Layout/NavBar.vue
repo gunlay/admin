@@ -55,26 +55,26 @@ const fullName = config.fullName
 const abbrName = config.abbrName
 </script>
 
-<style scoped>
-.navbar :deep(.el-menu-vertical) {
-  height: 100%;
-  border-right: 0;
-}
+<style scoped lang="scss">
+.navbar {
+  :global(.el-menu-vertical) {
+    height: 100%;
+    border-right: 0;
+  }
 
-.logo {
-  height: 60px;
-  display: flex;
-  line-height: 60px;
-  color: #42b983;
-  width: 100%;
-}
-
-.logo .normal {
-  padding-left: 20px;
-}
-
-.logo .mini {
-  width: 100%;
-  text-align: center;
+  .logo {
+    height: 60px;
+    display: flex;
+    line-height: 60px;
+    color: #42b983;
+    width: 100%;
+    .normal {
+      padding-left: 20px;
+    }
+    .mini {
+      width: 100%;
+      text-align: center;
+    }
+  }
 }
 </style>

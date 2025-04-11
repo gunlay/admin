@@ -44,25 +44,26 @@ const menuOpenOrClose = () => {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .header {
   height: 60px;
-}
-.header :deep(.el-header) {
-  border-bottom: 1px solid #e6e6e6;
-  height: 60px;
-  line-height: 60px;
-}
-.header :deep(.el-button) {
-  border: none;
-}
-.open_menu {
-  cursor: pointer;
-}
-.header :deep(.el-breadcrumb) {
-  line-height: 60px;
-}
-.header a {
-  text-decoration: none;
+  :global(.el-header) {
+    border-bottom: 1px solid #e6e6e6;
+    height: 60px;
+    line-height: 60px;
+  }
+  :global(.el-button) {
+    border: none;
+  }
+
+  .open_menu {
+    cursor: pointer;
+  }
+  :global(.el-breadcrumb) {
+    line-height: 60px;
+  }
+  a {
+    text-decoration: none;
+  }
 }
 </style>

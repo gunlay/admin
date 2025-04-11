@@ -43,7 +43,7 @@ defineProps({
 // };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .el-menu-item,
 .el-sub-menu {
   text-align: left;

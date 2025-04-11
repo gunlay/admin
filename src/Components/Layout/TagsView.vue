@@ -138,7 +138,7 @@ const isActive = tag => (tag.fullPath === route.fullPath ? '' : '#fff')
 const openTagPage = tag => router.push({ path: tag.fullPath })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .tags_box {
   position: relative;
   height: 45px;
