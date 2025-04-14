@@ -1,6 +1,5 @@
 <template>
   <div class="categories-container">
-    <h2>分类&标签管理</h2>
     <el-row :gutter="20">
       <el-col :span="12">
         <el-card header="分类管理">

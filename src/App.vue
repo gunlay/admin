@@ -1,12 +1,8 @@
 <template>
-  <el-config-provider>
-    <router-view></router-view>
-  </el-config-provider>
+  <router-view></router-view>
 </template>
 
-<script setup lang="ts">
-import { ElConfigProvider } from 'element-plus'
-</script>
+<script setup lang="ts"></script>
 
 <style>
 * {
@@ -19,7 +15,7 @@ html,
 body,
 #app {
   height: 100%;
-  width: 100%;
+  width: 100% !important;
   margin: 0;
   padding: 0;
   overflow: hidden;

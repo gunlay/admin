@@ -1,0 +1,39 @@
+// Element Plus 按钮样式重置
+.el-button {
+  &:focus,
+  &:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
+  }
+
+  &:active {
+    outline: none !important;
+    border-color: transparent !important;
+  }
+
+  // 确保所有类型的按钮都应用这个规则
+  &.el-button--primary,
+  &.el-button--success,
+  &.el-button--warning,
+  &.el-button--danger,
+  &.el-button--info {
+    &:focus,
+    &:focus-visible,
+    &:active {
+      outline: none !important;
+      box-shadow: none !important;
+      border-color: transparent !important;
+    }
+  }
+}
+
+// 禁用状态的按钮也需要重置
+.el-button.is-disabled {
+  &:focus,
+  &:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
+  }
+}

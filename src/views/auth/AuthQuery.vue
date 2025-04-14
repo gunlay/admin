@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
-import { UserListParams } from '@/api/types/userManagement'
-const emit = defineEmits(['search'])
 
-const searchForm = reactive<UserListParams>({})
+const emit = defineEmits(['search'])
+// 添加搜索表单数据
+const searchForm = reactive({
+  username: '',
+  phone: '',
+  authType: '全部',
+  status: '全部'
+})
 // 修改查询功能，保持排序和分页
 const handleSearch = () => {
   emit('search', searchForm)
@@ -14,8 +19,8 @@ const handleReset = () => {
   // 重置表单
   searchForm.username = ''
   searchForm.phone = ''
-  searchForm.role = '全部'
-  searchForm.authStatus = '全部'
+  searchForm.authType = '全部'
+  searchForm.status = '全部'
   emit('search', searchForm)
   ElMessage.success('重置成功')
 }
@@ -37,41 +42,45 @@ const handleReset = () => {
         placeholder="请输入手机号"
       />
     </el-form-item>
-    <el-form-item label="用户角色">
+    <el-form-item label="认证类别">
       <el-select
-        v-model="searchForm.role"
-        placeholder="请选择角色"
+        v-model="searchForm.authType"
+        placeholder="请选择类别"
       >
         <el-option
           label="全部"
           value="全部"
         />
         <el-option
-          label="大学生"
-          value="大学生"
+          label="工作认证"
+          value="工作认证"
         />
         <el-option
-          label="程序员"
-          value="程序员"
+          label="技能认证"
+          value="技能认证"
         />
       </el-select>
     </el-form-item>
-    <el-form-item label="认证状态">
+    <el-form-item label="审核状态">
       <el-select
-        v-model="searchForm.authStatus"
-        placeholder="请选择认证状态"
+        v-model="searchForm.status"
+        placeholder="请选择状态"
       >
         <el-option
           label="全部"
           value="全部"
         />
         <el-option
-          label="未认证"
-          value="未认证"
+          label="未审核"
+          value="未审核"
         />
         <el-option
-          label="已认证"
-          value="已认证"
+          label="已通过"
+          value="已通过"
+        />
+        <el-option
+          label="已拒绝"
+          value="已拒绝"
         />
       </el-select>
     </el-form-item>
@@ -85,5 +94,3 @@ const handleReset = () => {
     </el-form-item>
   </el-form>
 </template>
-
-<style scoped lang="scss"></style>

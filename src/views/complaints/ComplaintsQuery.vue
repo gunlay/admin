@@ -1,25 +1,31 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
-import { UserListParams } from '@/api/types/userManagement'
+import { ElMessage } from 'element-plus'
+
 const emit = defineEmits(['search'])
 
-const searchForm = reactive<UserListParams>({})
-// 修改查询功能，保持排序和分页
+const searchForm = reactive({
+  username: '',
+  phone: '',
+  status: '全部'
+})
+
+// 查询功能
 const handleSearch = () => {
   emit('search', searchForm)
 }
 
-// 修改重置功能
+// 重置功能
 const handleReset = () => {
   // 重置表单
   searchForm.username = ''
   searchForm.phone = ''
-  searchForm.role = '全部'
-  searchForm.authStatus = '全部'
+  searchForm.status = '全部'
   emit('search', searchForm)
   ElMessage.success('重置成功')
 }
 </script>
+
 <template>
   <el-form
     :inline="true"
@@ -37,41 +43,22 @@ const handleReset = () => {
         placeholder="请输入手机号"
       />
     </el-form-item>
-    <el-form-item label="用户角色">
+    <el-form-item label="投诉状态">
       <el-select
-        v-model="searchForm.role"
-        placeholder="请选择角色"
+        v-model="searchForm.status"
+        placeholder="请选择状态"
       >
         <el-option
           label="全部"
           value="全部"
         />
         <el-option
-          label="大学生"
-          value="大学生"
+          label="已处理"
+          value="已处理"
         />
         <el-option
-          label="程序员"
-          value="程序员"
-        />
-      </el-select>
-    </el-form-item>
-    <el-form-item label="认证状态">
-      <el-select
-        v-model="searchForm.authStatus"
-        placeholder="请选择认证状态"
-      >
-        <el-option
-          label="全部"
-          value="全部"
-        />
-        <el-option
-          label="未认证"
-          value="未认证"
-        />
-        <el-option
-          label="已认证"
-          value="已认证"
+          label="处理中"
+          value="处理中"
         />
       </el-select>
     </el-form-item>
@@ -86,4 +73,12 @@ const handleReset = () => {
   </el-form>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped>
+:deep(.el-input) {
+  width: 120px;
+}
+
+:deep(.el-select) {
+  width: 120px;
+}
+</style>

@@ -67,6 +67,6 @@ export class Request {
   }
 }
 
-const request = new Request('http://localhost:3000/')
+const request = new Request('http://139.224.52.179:4125/')
 
 export default request
