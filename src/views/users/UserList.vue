@@ -3,6 +3,7 @@ import Grid from '@/components/Grid/index.vue'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
 import { formatPhone } from '@/utils/helper'
+import userManagementApi from '@/api/userManagement'
 const userGridRef = ref<InstanceType<typeof Grid>>()
 
 const emit = defineEmits(['edit', 'statusChange'])
@@ -26,11 +27,9 @@ const getUserStatusType = (status: string) => {
   return 'success'
 }
 
-const loadData = (params: any) => {
-  // if (userGridRef.value) {
-  //   userGridRef.value.loadData?.({})
-  // }
-  console.log('loadData', params)
+const loadData = async (params: any) => {
+  const res = await userManagementApi.fetchUserList(params)
+  console.log('loadData', res)
   return Promise.resolve({
     data: [
       {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { UserListParams } from '@/api/types/userManagement'
+import { UserRoleList, UserAuthList } from './const'
 const emit = defineEmits(['search'])
 
 const searchForm = reactive<UserListParams>({})
@@ -12,10 +13,10 @@ const handleSearch = () => {
 // 修改重置功能
 const handleReset = () => {
   // 重置表单
-  searchForm.username = ''
+  searchForm.userName = ''
   searchForm.phone = ''
-  searchForm.role = '全部'
-  searchForm.authStatus = '全部'
+  searchForm.role = undefined
+  searchForm.authStatus = undefined
   emit('search', searchForm)
   ElMessage.success('重置成功')
 }
@@ -27,7 +28,7 @@ const handleReset = () => {
   >
     <el-form-item label="用户名">
       <el-input
-        v-model="searchForm.username"
+        v-model="searchForm.userName"
         placeholder="请输入用户名"
       />
     </el-form-item>
@@ -44,15 +45,13 @@ const handleReset = () => {
       >
         <el-option
           label="全部"
-          value="全部"
+          value="undefined"
         />
         <el-option
-          label="大学生"
-          value="大学生"
-        />
-        <el-option
-          label="程序员"
-          value="程序员"
+          v-for="role in UserRoleList"
+          :key="role.value"
+          :label="role.label"
+          :value="role.value"
         />
       </el-select>
     </el-form-item>
@@ -61,17 +60,16 @@ const handleReset = () => {
         v-model="searchForm.authStatus"
         placeholder="请选择认证状态"
       >
-        <el-option
+        <!-- <el-option
           label="全部"
-          value="全部"
-        />
+          value=""
+        /> -->
+
         <el-option
-          label="未认证"
-          value="未认证"
-        />
-        <el-option
-          label="已认证"
-          value="已认证"
+          v-for="auth in UserAuthList"
+          :key="auth.value"
+          :label="auth.label"
+          :value="auth.value"
         />
       </el-select>
     </el-form-item>

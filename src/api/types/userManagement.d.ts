@@ -1,16 +1,26 @@
+export enum UserRolesEnum {
+  Normal = 0,
+  Programmer = 1
+}
+export enum UserAuthEnum {
+  Authing = 0,
+  Authed = 1,
+  Denied = 2
+}
+
 export type UserListParams = {
-  authStatus?: number
+  authStatus?: UserAuthEnum
   phone?: string
-  role?: number
+  role?: UserRolesEnum
   userName?: string
 }
 
 export type UserlistDTO = {
-  authStatus: string
+  authStatus: UserAuthEnum
   createTime: string
   id: string
   phone: string
-  role: string
+  role: UserRolesEnum
   userStatus: string
   username: string
 }

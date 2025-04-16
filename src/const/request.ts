@@ -23,8 +23,8 @@ export class Request {
       }
     })
     this.instance.interceptors.request.use(config => {
-      // const token = localStorage.getItem('jwt');
-      // if (token) config.headers!.Authorization = `Bearer ${token}`;
+      const token = localStorage.getItem('login_token')
+      if (token) config.headers!.Authorization = `Bearer ${token}`
       startLoading(config)
       return config
     })
@@ -53,7 +53,7 @@ export class Request {
       ...config,
       url,
       data,
-      method: 'post'
+      method: 'POST'
     }) as unknown as Promise<Result<T>>
   }
   get<T = unknown>(url: string, params?: Record<string, JSONValue>, config?: Config) {
@@ -62,7 +62,7 @@ export class Request {
       ...config,
       url,
       params,
-      method: 'get'
+      method: 'GET'
     }) as unknown as Promise<Result<T>>
   }
 }

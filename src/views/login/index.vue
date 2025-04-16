@@ -10,11 +10,11 @@
         :rules="rules"
         ref="loginFormRef"
       >
-        <el-form-item prop="username">
+        <el-form-item prop="phone">
           <el-input
-            v-model="loginForm.username"
-            placeholder="用户名"
-            prefix-icon="User"
+            v-model="loginForm.phone"
+            placeholder="手机号"
+            prefix-icon="Phone"
           />
         </el-form-item>
 
@@ -46,28 +46,36 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { FormInstance } from 'element-plus'
+import commonApi from '@/api/common'
 
 const router = useRouter()
 const loginFormRef = ref<FormInstance>()
 
 const loginForm = reactive({
-  username: '',
+  phone: '',
   password: ''
 })
 
 const rules = {
-  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+  phone: [{ required: true, message: '请输入手机号', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
 }
 
 const handleLogin = async () => {
   if (!loginFormRef.value) return
 
-  await loginFormRef.value.validate(valid => {
+  await loginFormRef.value.validate(async valid => {
     if (valid) {
-      // 模拟登录成功，存储 token
-      localStorage.setItem('token', 'dummy-token')
-      router.push('/dashboard')
+      await commonApi
+        .login({
+          phone: loginForm.phone,
+          password: loginForm.password
+        })
+        .then(res => {
+          console.log('res', res)
+          localStorage.setItem('token', res.data.token)
+          router.push('/dashboard')
+        })
     }
   })
 }
