@@ -72,7 +72,7 @@ const loadData = async (params: UserListParams & PageParams) => {
 
 const load = (params?: UserListParams) => {
   if (userGridRef.value) {
-    userGridRef.value.loadData?.(params || {})
+    userGridRef.value.loadData?.(params)
   }
 }
 

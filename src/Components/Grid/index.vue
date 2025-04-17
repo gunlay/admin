@@ -14,8 +14,8 @@
         stripe
         highlight-current-row
         style="width: 100%; margin-bottom: 12px"
-        @selection-change="(e: any) => $emit('selectionChange', e)"
-        @sort-change="(e: any) => $emit('sortChange', e)"
+        @selection-change="handleSelectionChange"
+        @sort-change="handleSortChange"
       >
         <slot></slot>
       </el-table>
@@ -33,21 +33,47 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends Record<string, unknown>">
 import { PropType, reactive, ref, defineEmits, defineExpose, defineProps } from 'vue'
 import { ElPagination, ElTable, TreeNode } from 'element-plus'
 import { deepCopy } from '@/utils/helper'
+import { PageParams } from '@/api/types/common'
 
-type PostData = Record<string, number>
+interface PostData extends PageParams {
+  [key: string]: unknown
+}
+
+interface ApiResponse<T> {
+  data: T[]
+  total: number
+}
+
+interface SortProps {
+  prop: string
+  order: 'ascending' | 'descending'
+}
+
+interface SortChangeEvent {
+  column: unknown
+  prop: string
+  order: string
+}
+
+interface TableRecord {
+  data: T[]
+  currentPage: number
+  size: number
+  total: number
+}
 
 const props = defineProps({
   remoteMethod: {
-    type: Function,
+    type: Function as PropType<(params: PostData) => Promise<ApiResponse<T>>>,
     required: true
   },
   load: {
     type: Function as PropType<
-      ((row: any, treeNode: TreeNode, resolve: (data: any[]) => void) => void) | undefined
+      ((row: T, treeNode: TreeNode, resolve: (data: T[]) => void) => void) | undefined
     >
   },
   lazy: {
@@ -78,14 +104,6 @@ const props = defineProps({
     type: String,
     default: 'pageIndex'
   },
-  totalCountName: {
-    type: String,
-    default: 'total'
-  },
-  dataName: {
-    type: String,
-    default: 'data'
-  },
   border: {
     type: Boolean,
     default: true
@@ -99,28 +117,33 @@ const props = defineProps({
     default: () => ({})
   },
   defaultSort: {
-    type: Object as PropType<{
-      prop: any
-      order: any
-    }>,
+    type: Object as PropType<SortProps>,
     default: () => ({})
   }
 })
 
-const emit = defineEmits<{
-  (e: 'currentChange', page: number): void
-  (e: 'selectionChange', selection: any): void
-  (e: 'sortChange', change: any): void
-}>()
+const emit = defineEmits(['current-change', 'selection-change', 'sort-change'])
 
-const postData = ref<PostData>({})
 const searching = ref<boolean>(false)
-const tableData = reactive({
-  data: [],
+const tableData = reactive<TableRecord>({
+  data: [] as T[],
   currentPage: 1,
   size: props.pageSize,
   total: 0
 })
+
+const postData = ref<PostData>({
+  pageIndex: tableData.currentPage,
+  pageSize: props.pageSize
+})
+
+const handleSelectionChange = (selection: T[]) => {
+  emit('selection-change', selection)
+}
+
+const handleSortChange = (param: SortChangeEvent) => {
+  emit('sort-change', param)
+}
 
 const _loadData = async (params?: PostData) => {
   if (!props.remoteMethod) {
@@ -135,18 +158,32 @@ const _loadData = async (params?: PostData) => {
   try {
     const response = await props.remoteMethod(postData.value)
     if (response) {
-      const data = response[props.dataName]
-      const recordsCount = response[props.totalCountName]
-      tableData.data = data
-      tableData.total = recordsCount
-    }
+      const responseData = response.data
+      const recordsCount = response.total
 
+      if (Array.isArray(responseData)) {
+        tableData.data.length = 0
+        ;(responseData as T[]).forEach(item => {
+          tableData.data.push(item as any)
+        })
+      } else {
+        tableData.data.length = 0
+      }
+
+      if (typeof recordsCount === 'number') {
+        tableData.total = recordsCount
+      } else if (typeof recordsCount === 'string') {
+        tableData.total = parseInt(recordsCount, 10) || 0
+      } else {
+        tableData.total = 0
+      }
+    }
     searching.value = false
     return response
   } catch (e: unknown) {
-    if ((e as any).name === 'CancelError') return null
+    if (e && typeof e === 'object' && 'name' in e && e.name === 'CancelError') return null
     // errorMessage.show(e);
-    tableData.data = []
+    tableData.data.length = 0
     tableData.total = 0
     searching.value = false
     return null
@@ -163,7 +200,7 @@ const handleSizeChange = (size: number) => {
 }
 
 const handleCurrentChange = (page: number) => {
-  emit('currentChange', page)
+  emit('current-change', page)
   tableData.currentPage = page
   _loadData()
 }
@@ -177,7 +214,15 @@ const loadData = (params: PostData) => {
   return _loadData(params)
 }
 
-defineExpose({ loadData, reload })
+defineExpose<{
+  loadData: (params: PostData) => Promise<ApiResponse<T> | null>
+  reload: () => Promise<ApiResponse<T> | null>
+  getTableData: () => T[]
+}>({
+  loadData,
+  reload,
+  getTableData: () => [...(tableData.data as any)]
+})
 </script>
 
 <style lang="scss" scoped>
