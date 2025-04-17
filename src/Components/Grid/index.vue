@@ -134,7 +134,6 @@ const _loadData = async (params?: PostData) => {
 
   try {
     const response = await props.remoteMethod(postData.value)
-    console.log('response', response)
     if (response) {
       const data = response[props.dataName]
       const recordsCount = response[props.totalCountName]
@@ -181,7 +180,7 @@ const loadData = (params: PostData) => {
 defineExpose({ loadData, reload })
 </script>
 
-<style lang="scss" module>
+<style lang="scss" scoped>
 .flex_box {
   display: flex;
   flex-direction: column;

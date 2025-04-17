@@ -44,16 +44,17 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import type { FormInstance } from 'element-plus'
 import commonApi from '@/api/common'
 
 const router = useRouter()
+const route = useRoute()
 const loginFormRef = ref<FormInstance>()
 
 const loginForm = reactive({
-  phone: '',
-  password: ''
+  phone: 13576271827,
+  password: 'WOaini123'
 })
 
 const rules = {
@@ -68,13 +69,20 @@ const handleLogin = async () => {
     if (valid) {
       await commonApi
         .login({
-          phone: loginForm.phone,
+          phone: Number(loginForm.phone),
           password: loginForm.password
         })
         .then(res => {
           console.log('res', res)
-          localStorage.setItem('token', res.data.token)
-          router.push('/dashboard')
+          localStorage.setItem('login_token', res.data.token)
+
+          // 检查是否有 return_to 参数
+          const returnTo = route.query.return_to as string
+          if (returnTo) {
+            router.push(returnTo)
+          } else {
+            router.push('/dashboard')
+          }
         })
     }
   })

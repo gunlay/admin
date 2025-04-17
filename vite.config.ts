@@ -21,5 +21,14 @@ export default defineConfig({
       '@': path.resolve('./src'), // @代替src
       '#': path.resolve('./types') // #代替types
     }
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://139.224.52.179:4125/',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/api/, '')
+      }
+    }
   }
 })

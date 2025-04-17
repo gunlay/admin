@@ -4,6 +4,8 @@ import { onMounted } from 'vue'
 import { ref } from 'vue'
 import { formatPhone } from '@/utils/helper'
 import userManagementApi from '@/api/userManagement'
+import { UserListParams } from '@/api/types/userManagement'
+import { PageParams } from '@/api/types/common'
 const userGridRef = ref<InstanceType<typeof Grid>>()
 
 const emit = defineEmits(['edit', 'statusChange'])
@@ -27,46 +29,50 @@ const getUserStatusType = (status: string) => {
   return 'success'
 }
 
-const loadData = async (params: any) => {
+const loadData = async (params: UserListParams & PageParams) => {
   const res = await userManagementApi.fetchUserList(params)
-  console.log('loadData', res)
-  return Promise.resolve({
-    data: [
-      {
-        id: 3,
-        name: '王五',
-        phone: '13412349872',
-        role: '程序员',
-        createTime: '2025.01.08 12:23:45',
-        authStatus: '未认证',
-        status: '已注销'
-      },
-      {
-        id: 2,
-        name: '李四',
-        phone: '13412349874',
-        role: '程序员',
-        createTime: '2025.01.05 12:23:45',
-        authStatus: '已认证',
-        status: '已封禁 剩余30天'
-      },
-      {
-        id: 1,
-        name: '张三',
-        phone: '18812342349',
-        role: '大学生',
-        createTime: '2025.01.02 12:23:45',
-        authStatus: '',
-        status: '正常'
-      }
-    ],
-    total: 3
-  })
+  return {
+    data: res.data.list,
+    total: res.data.total
+  }
+  // console.log('loadData', res)
+  // return Promise.resolve({
+  //   data: [
+  //     {
+  //       id: 3,
+  //       name: '王五',
+  //       phone: '13412349872',
+  //       role: '程序员',
+  //       createTime: '2025.01.08 12:23:45',
+  //       authStatus: '未认证',
+  //       status: '已注销'
+  //     },
+  //     {
+  //       id: 2,
+  //       name: '李四',
+  //       phone: '13412349874',
+  //       role: '程序员',
+  //       createTime: '2025.01.05 12:23:45',
+  //       authStatus: '已认证',
+  //       status: '已封禁 剩余30天'
+  //     },
+  //     {
+  //       id: 1,
+  //       name: '张三',
+  //       phone: '18812342349',
+  //       role: '大学生',
+  //       createTime: '2025.01.02 12:23:45',
+  //       authStatus: '',
+  //       status: '正常'
+  //     }
+  //   ],
+  //   total: 3
+  // })
 }
 
-const load = (params?: any) => {
+const load = (params?: UserListParams) => {
   if (userGridRef.value) {
-    userGridRef.value.loadData?.(params)
+    userGridRef.value.loadData?.(params || {})
   }
 }
 

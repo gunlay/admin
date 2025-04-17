@@ -36,7 +36,7 @@ const Catcher = (error: any, isHttpError?: boolean) => {
       message: HttpErrorList[status as number],
       duration: DURATION
     })
-    if (status === 401) router.push(`/sign_in?return_to=${route.fullPath}`)
+    if (status === 401) router.push(`/login?return_to=${route.fullPath}`)
     throw new HttpBizError(baseMessage)
   } else if (response) {
     const { config, data, request } = response

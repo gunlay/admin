@@ -24,6 +24,8 @@ export class Request {
     })
     this.instance.interceptors.request.use(config => {
       const token = localStorage.getItem('login_token')
+      console.log('token', token)
+
       if (token) config.headers!.Authorization = `Bearer ${token}`
       startLoading(config)
       return config
@@ -67,6 +69,6 @@ export class Request {
   }
 }
 
-const request = new Request('http://139.224.52.179:4125/')
+const request = new Request(import.meta.env.PROD ? 'http://139.224.52.179:4125/' : '/api/')
 
 export default request
