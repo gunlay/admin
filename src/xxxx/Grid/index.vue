@@ -37,16 +37,7 @@
 import { PropType, reactive, ref, defineEmits, defineExpose, defineProps } from 'vue'
 import { ElPagination, ElTable, TreeNode } from 'element-plus'
 import { deepCopy } from '@/utils/helper'
-import { PageParams } from '@/api/types/common'
-
-interface PostData extends PageParams {
-  [key: string]: unknown
-}
-
-interface ApiResponse<T> {
-  data: T[]
-  total: number
-}
+import { GridExpose, ApiResponse, PostData } from './gridType'
 
 interface SortProps {
   prop: string
@@ -205,7 +196,7 @@ const handleCurrentChange = (page: number) => {
   _loadData()
 }
 
-const loadData = (params: PostData) => {
+const loadData = (params?: PostData) => {
   if (params) {
     tableData.currentPage = params.pageIndex || 1
   } else {
@@ -214,11 +205,7 @@ const loadData = (params: PostData) => {
   return _loadData(params)
 }
 
-defineExpose<{
-  loadData: (params: PostData) => Promise<ApiResponse<T> | null>
-  reload: () => Promise<ApiResponse<T> | null>
-  getTableData: () => T[]
-}>({
+defineExpose<GridExpose<T>>({
   loadData,
   reload,
   getTableData: () => [...(tableData.data as any)]
@@ -234,3 +221,4 @@ defineExpose<{
   z-index: 0;
 }
 </style>
+./gridType

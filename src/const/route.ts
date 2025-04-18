@@ -7,7 +7,7 @@ import { createRoutesFromMenu } from '@/utils/menuToRoutes'
 const routerGuard = (router: any) => {
   router.beforeEach((to: any, _: any, next: any) => {
     if (to.path !== '/login') {
-      const isAuthenticated = localStorage.getItem('token')
+      const isAuthenticated = localStorage.getItem('login_token')
       if (!isAuthenticated) {
         next('/login')
         return

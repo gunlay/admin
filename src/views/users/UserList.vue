@@ -4,9 +4,11 @@ import { onMounted } from 'vue'
 import { ref } from 'vue'
 import { formatPhone } from '@/utils/helper'
 import userManagementApi from '@/api/userManagement'
-import { UserListParams } from '@/api/types/userManagement'
+import { UserListParams, UserlistDTO } from '@/api/types/userManagement'
 import { PageParams } from '@/api/types/common'
-const userGridRef = ref<InstanceType<typeof Grid>>()
+import { GridExpose } from '@/Components/Grid/gridType'
+
+const userGridRef = ref<GridExpose<UserlistDTO>>()
 
 const emit = defineEmits(['edit', 'statusChange'])
 
@@ -161,3 +163,4 @@ defineExpose({
 </template>
 
 <style scoped lang="scss"></style>
+@/Components/Grid/gridType
