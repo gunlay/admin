@@ -7,6 +7,11 @@ export enum UserAuthEnum {
   Authed = 1,
   Denied = 2
 }
+export enum UserStatusEnum {
+  Authing = 0,
+  Authed = 1,
+  Denied = 2
+}
 
 export type UserListParams = {
   authStatus?: UserAuthEnum

@@ -5,12 +5,10 @@ export interface ApiResponse<T> {
   total: number
 }
 
-export interface PostData extends PageParams {
-  [key: string]: unknown
-}
+export type PostData<U> = U & Partial<PageParams>
 
-export interface GridExpose<T> {
-  loadData: (params?: PostData) => Promise<ApiResponse<T> | null>
+export interface GridExpose<T, U> {
+  loadData: (params?: PostData<U>) => Promise<ApiResponse<T> | null>
   reload: () => Promise<ApiResponse<T> | null>
   getTableData: () => T[]
 }

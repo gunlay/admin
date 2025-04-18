@@ -38,7 +38,7 @@ const handleSearch = (searchForm: any) => {
 }
 
 const handleStatusChange = (row: any) => {
-  if (row.status === '正常') {
+  if (row.userStatus === '正常') {
     // 如果是禁用操作，显示禁用对话框
     banUserDialogRef.value?.showDialog()
   } else {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Grid from '@/components/Grid/index.vue'
+import Grid from '@/Components/Grid/index.vue'
 import { formatPhone } from '@/utils/helper'
 import { defineEmits, onMounted, ref } from 'vue'
 

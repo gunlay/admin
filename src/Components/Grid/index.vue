@@ -33,7 +33,7 @@
   </div>
 </template>
 
-<script setup lang="ts" generic="T extends Record<string, unknown>">
+<script setup lang="ts" generic="ListProps, ListParams">
 import { PropType, reactive, ref, defineEmits, defineExpose, defineProps } from 'vue'
 import { ElPagination, ElTable, TreeNode } from 'element-plus'
 import { deepCopy } from '@/utils/helper'
@@ -51,7 +51,7 @@ interface SortChangeEvent {
 }
 
 interface TableRecord {
-  data: T[]
+  data: ListProps[]
   currentPage: number
   size: number
   total: number
@@ -59,12 +59,13 @@ interface TableRecord {
 
 const props = defineProps({
   remoteMethod: {
-    type: Function as PropType<(params: PostData) => Promise<ApiResponse<T>>>,
+    type: Function as PropType<(params: PostData<ListParams>) => Promise<ApiResponse<ListProps>>>,
     required: true
   },
   load: {
     type: Function as PropType<
-      ((row: T, treeNode: TreeNode, resolve: (data: T[]) => void) => void) | undefined
+      | ((row: ListProps, treeNode: TreeNode, resolve: (data: ListProps[]) => void) => void)
+      | undefined
     >
   },
   lazy: {
@@ -117,18 +118,18 @@ const emit = defineEmits(['current-change', 'selection-change', 'sort-change'])
 
 const searching = ref<boolean>(false)
 const tableData = reactive<TableRecord>({
-  data: [] as T[],
+  data: [] as ListProps[],
   currentPage: 1,
   size: props.pageSize,
   total: 0
 })
 
-const postData = ref<PostData>({
+const postData = ref<PostData<ListParams>>({
   pageIndex: tableData.currentPage,
   pageSize: props.pageSize
-})
+} as PostData<ListParams>)
 
-const handleSelectionChange = (selection: T[]) => {
+const handleSelectionChange = (selection: ListProps[]) => {
   emit('selection-change', selection)
 }
 
@@ -136,7 +137,7 @@ const handleSortChange = (param: SortChangeEvent) => {
   emit('sort-change', param)
 }
 
-const _loadData = async (params?: PostData) => {
+const _loadData = async (params?: PostData<ListParams>) => {
   if (!props.remoteMethod) {
     return null
   }
@@ -154,7 +155,7 @@ const _loadData = async (params?: PostData) => {
 
       if (Array.isArray(responseData)) {
         tableData.data.length = 0
-        ;(responseData as T[]).forEach(item => {
+        ;(responseData as ListProps[]).forEach(item => {
           tableData.data.push(item as any)
         })
       } else {
@@ -196,7 +197,7 @@ const handleCurrentChange = (page: number) => {
   _loadData()
 }
 
-const loadData = (params?: PostData) => {
+const loadData = (params?: PostData<ListParams>) => {
   if (params) {
     tableData.currentPage = params.pageIndex || 1
   } else {
@@ -205,7 +206,7 @@ const loadData = (params?: PostData) => {
   return _loadData(params)
 }
 
-defineExpose<GridExpose<T>>({
+defineExpose<GridExpose<ListProps, ListParams>>({
   loadData,
   reload,
   getTableData: () => [...(tableData.data as any)]

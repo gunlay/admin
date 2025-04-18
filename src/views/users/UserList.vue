@@ -1,35 +1,17 @@
 <script setup lang="ts">
-import Grid from '@/components/Grid/index.vue'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
+import Grid from '@/Components/Grid/index.vue'
+import { GridExpose } from '@/Components/Grid/gridType'
 import { formatPhone } from '@/utils/helper'
 import userManagementApi from '@/api/userManagement'
 import { UserListParams, UserlistDTO } from '@/api/types/userManagement'
 import { PageParams } from '@/api/types/common'
-import { GridExpose } from '@/Components/Grid/gridType'
+import { UserRoleList, UserAuthList, UserStatusList } from './const'
 
-const userGridRef = ref<GridExpose<UserlistDTO>>()
+const userGridRef = ref<GridExpose<UserlistDTO, UserListParams>>()
 
 const emit = defineEmits(['edit', 'statusChange'])
-
-// 获取认证状态标签类型
-const getAuthStatusType = (
-  status: string
-): 'success' | 'warning' | 'info' | 'primary' | 'danger' => {
-  const statusMap: Record<string, 'success' | 'warning' | 'info' | 'primary' | 'danger'> = {
-    已认证: 'success',
-    未认证: 'warning',
-    '': 'info'
-  }
-  return statusMap[status] || 'info'
-}
-
-// 获取用户状态标签类型
-const getUserStatusType = (status: string) => {
-  if (status.includes('封禁')) return 'danger'
-  if (status === '已注销') return 'info'
-  return 'success'
-}
 
 const loadData = async (params: UserListParams & PageParams) => {
   const res = await userManagementApi.fetchUserList(params)
@@ -97,7 +79,7 @@ defineExpose({
       width="80"
     />
     <el-table-column
-      prop="name"
+      prop="username"
       label="用户名"
       width="120"
     />
@@ -113,7 +95,11 @@ defineExpose({
       prop="role"
       label="用户角色"
       width="100"
-    />
+    >
+      <template #default="scope">
+        {{ UserRoleList[scope.row.role]?.label || '—' }}
+      </template>
+    </el-table-column>
     <el-table-column
       prop="createTime"
       label="注册时间"
@@ -124,8 +110,8 @@ defineExpose({
       width="100"
     >
       <template #default="scope">
-        <el-tag :type="getAuthStatusType(scope.row.authStatus)">
-          {{ scope.row.authStatus || '—' }}
+        <el-tag :type="UserAuthList[scope.row.authStatus]?.type || 'info'">
+          {{ UserAuthList[scope.row.authStatus]?.label || '—' }}
         </el-tag>
       </template>
     </el-table-column>
@@ -134,8 +120,8 @@ defineExpose({
       width="150"
     >
       <template #default="scope">
-        <el-tag :type="getUserStatusType(scope.row.status)">
-          {{ scope.row.status }}
+        <el-tag :type="UserStatusList[scope.row.userStatus]?.type || 'success'">
+          {{ UserStatusList[scope.row.userStatus]?.label || '—' }}
         </el-tag>
       </template>
     </el-table-column>
@@ -151,16 +137,19 @@ defineExpose({
           >编辑</el-button
         >
         <el-button
-          :type="scope.row.status === '正常' ? 'danger' : 'success'"
+          v-if="scope.row.userStatus === 0 || scope.row.userStatus === 1"
+          :type="scope.row.userStatus === 0 ? 'danger' : 'success'"
           size="small"
           @click="emit('statusChange', scope.row)"
         >
-          {{ scope.row.status === '正常' ? '禁用' : '启用' }}
+          {{
+            {
+              1: '禁用',
+              0: '启用'
+            }[scope.row.userStatus as 0 | 1]
+          }}
         </el-button>
       </template>
     </el-table-column>
   </Grid>
 </template>
-
-<style scoped lang="scss"></style>
-@/Components/Grid/gridType
