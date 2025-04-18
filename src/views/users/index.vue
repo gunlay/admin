@@ -21,37 +21,40 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { UserlistDTO, UserListParams, UserStatusEnum } from '@/api/types/userManagement'
+import userManagementApi from '@/api/userManagement'
 import EditUserDialog from './EditUserDialog.vue'
 import BanUserDialog from './BanUserDialog.vue'
 import Query from './UserQuery.vue'
 import UserList from './UserList.vue'
+import { UserStatusList } from './const'
 
 const editUserDialogRef = ref<InstanceType<typeof EditUserDialog>>()
 const banUserDialogRef = ref<InstanceType<typeof BanUserDialog>>()
 const userListRef = ref<InstanceType<typeof UserList>>()
-const handleEdit = (row: any) => {
+const handleEdit = (row: UserlistDTO) => {
   editUserDialogRef.value?.showDialog(row)
 }
 
-const handleSearch = (searchForm: any) => {
-  userListRef.value?.loadData(searchForm)
+const handleSearch = (searchForm: UserListParams) => {
+  userListRef.value?.load(searchForm)
 }
 
-const handleStatusChange = (row: any) => {
-  if (row.userStatus === '正常') {
-    // 如果是禁用操作，显示禁用对话框
-    banUserDialogRef.value?.showDialog()
-  } else {
-    // 如果是启用操作，直接确认
-    ElMessageBox.confirm('确定要启用该用户吗？', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }).then(() => {
-      row.status = '正常'
-      ElMessage.success('启用成功')
-    })
-  }
+const handleStatusChange = async (row: UserlistDTO) => {
+  const action = UserStatusList.find(item => item.value === row.userStatus)?.action
+  await ElMessageBox.confirm(`确定要${action}该用户吗？`, '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  })
+  await userManagementApi.updateUser({
+    userId: row.id,
+    userStatus: {
+      0: UserStatusEnum.Banned,
+      1: UserStatusEnum.Normal
+    }[row.userStatus]
+  })
+  ElMessage.success(`${action}成功`)
 }
 </script>
 

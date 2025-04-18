@@ -65,7 +65,7 @@ onMounted(() => {
 })
 
 defineExpose({
-  loadData
+  load
 })
 </script>
 <template>
@@ -110,8 +110,10 @@ defineExpose({
       width="100"
     >
       <template #default="scope">
-        <el-tag :type="UserAuthList[scope.row.authStatus]?.type || 'info'">
-          {{ UserAuthList[scope.row.authStatus]?.label || '—' }}
+        <el-tag
+          :type="UserAuthList.find(item => item.value === scope.row.authStatus)?.type || 'info'"
+        >
+          {{ UserAuthList.find(item => item.value === scope.row.authStatus)?.label || '—' }}
         </el-tag>
       </template>
     </el-table-column>
@@ -120,8 +122,12 @@ defineExpose({
       width="150"
     >
       <template #default="scope">
-        <el-tag :type="UserStatusList[scope.row.userStatus]?.type || 'success'">
-          {{ UserStatusList[scope.row.userStatus]?.label || '—' }}
+        <el-tag
+          :type="
+            UserStatusList.find(item => item.value === scope.row.userStatus)?.type || 'success'
+          "
+        >
+          {{ UserStatusList.find(item => item.value === scope.row.userStatus)?.label || '—' }}
         </el-tag>
       </template>
     </el-table-column>
@@ -137,17 +143,13 @@ defineExpose({
           >编辑</el-button
         >
         <el-button
-          v-if="scope.row.userStatus === 0 || scope.row.userStatus === 1"
-          :type="scope.row.userStatus === 0 ? 'danger' : 'success'"
+          :type="
+            UserStatusList.find(item => item.value === scope.row.userStatus)?.type || 'success'
+          "
           size="small"
           @click="emit('statusChange', scope.row)"
         >
-          {{
-            {
-              1: '禁用',
-              0: '启用'
-            }[scope.row.userStatus as 0 | 1]
-          }}
+          {{ UserStatusList.find(item => item.value === scope.row.userStatus)?.action || '—' }}
         </el-button>
       </template>
     </el-table-column>

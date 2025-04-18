@@ -8,9 +8,8 @@ export enum UserAuthEnum {
   Denied = 2
 }
 export enum UserStatusEnum {
-  Authing = 0,
-  Authed = 1,
-  Denied = 2
+  Normal = 0,
+  Banned = 1
 }
 
 export type UserListParams = {
@@ -26,7 +25,7 @@ export type UserlistDTO = {
   id: string
   phone: string
   role: UserRolesEnum
-  userStatus: string
+  userStatus: UserStatusEnum
   username: string
 }
 

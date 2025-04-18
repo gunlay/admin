@@ -1,29 +1,24 @@
 <script setup lang="ts">
+import { UserlistDTO, UserStatusEnum } from '@/api/types/userManagement'
 import { ref } from 'vue'
 import { reactive } from 'vue'
-
-interface FormData {
-  id: string
-  name: string
-  phone: string
-  status: string
-}
+import { UserStatusList } from './const'
 
 const emit = defineEmits(['update:dialogVisible'])
 const dialogVisible = ref(false)
 
-const formData = reactive<FormData>({
+const formData = reactive<Partial<UserlistDTO>>({
   id: '',
-  name: '',
+  username: '',
   phone: '',
-  status: ''
+  userStatus: UserStatusEnum.Normal
 })
 const handleSubmit = () => {
   // 这里添加提交逻辑
   ElMessage.success('更新成功')
   dialogVisible.value = false
 }
-const showDialog = (_formData: FormData) => {
+const showDialog = (_formData: Partial<UserlistDTO>) => {
   Object.assign(formData, _formData)
   dialogVisible.value = true
 }
@@ -45,7 +40,7 @@ defineExpose({
     >
       <el-form-item label="用户名">
         <el-input
-          v-model="formData.name"
+          v-model="formData.username"
           disabled
         />
       </el-form-item>
@@ -53,14 +48,12 @@ defineExpose({
         <el-input v-model="formData.phone" />
       </el-form-item>
       <el-form-item label="状态">
-        <el-select v-model="formData.status">
+        <el-select v-model="formData.userStatus">
           <el-option
-            label="正常"
-            value="正常"
-          />
-          <el-option
-            label="禁用"
-            value="禁用"
+            v-for="status in UserStatusList"
+            :key="status.value"
+            :label="status.label"
+            :value="status.value"
           />
         </el-select>
       </el-form-item>
@@ -77,5 +70,3 @@ defineExpose({
     </template>
   </el-dialog>
 </template>
-
-<style scoped lang="scss"></style>
