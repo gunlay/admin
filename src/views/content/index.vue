@@ -16,6 +16,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { UserPostParams } from '@/api/types/userCotent'
 import ContentList from './ContentList.vue'
 import ContentQuery from './ContentQuery.vue'
 import ContentDialog from './ContentDialog.vue'
@@ -29,8 +30,8 @@ const handleView = (row: any) => {
 }
 
 // 修改查询功能，保持排序和分页
-const handleSearch = () => {
-  if (contentListRef.value) contentListRef.value.loadData({})
+const handleSearch = (params: UserPostParams) => {
+  if (contentListRef.value) contentListRef.value.load(params)
 }
 </script>
 

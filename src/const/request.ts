@@ -2,7 +2,14 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 import Catcher from './errCatcher'
 import { closeLoading, startLoading } from './globalLoading'
 
-type JSONValue = string | number | null | boolean | JSONValue[] | { [key: string]: JSONValue }
+type JSONValue =
+  | string
+  | number
+  | null
+  | undefined
+  | boolean
+  | JSONValue[]
+  | { [key: string]: JSONValue }
 export interface Result<R> {
   code: number
   data: R

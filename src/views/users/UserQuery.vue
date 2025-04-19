@@ -2,12 +2,18 @@
 import { reactive } from 'vue'
 import { UserListParams } from '@/api/types/userManagement'
 import { UserRoleList, UserAuthList } from './const'
+import { SelectOptions } from '@/api/types/common'
 const emit = defineEmits(['search'])
 
 const searchForm = reactive<UserListParams>({})
 // 修改查询功能，保持排序和分页
 const handleSearch = () => {
-  emit('search', searchForm)
+  emit('search', {
+    ...searchForm,
+    role: searchForm.role === SelectOptions.ALLOPTIONS ? undefined : searchForm.role,
+    authStatus:
+      searchForm.authStatus === SelectOptions.ALLOPTIONS ? undefined : searchForm.authStatus
+  })
 }
 
 // 修改重置功能
@@ -45,7 +51,7 @@ const handleReset = () => {
       >
         <el-option
           label="全部"
-          value="undefined"
+          :value="SelectOptions.ALLOPTIONS"
         />
         <el-option
           v-for="role in UserRoleList"
@@ -60,10 +66,10 @@ const handleReset = () => {
         v-model="searchForm.authStatus"
         placeholder="请选择认证状态"
       >
-        <!-- <el-option
+        <el-option
           label="全部"
-          value=""
-        /> -->
+          :value="SelectOptions.ALLOPTIONS"
+        />
 
         <el-option
           v-for="auth in UserAuthList"

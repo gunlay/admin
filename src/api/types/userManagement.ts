@@ -1,7 +1,5 @@
-export enum UserRolesEnum {
-  Normal = 0,
-  Programmer = 1
-}
+import { SelectOptions, UserRolesEnum } from './common'
+
 export enum UserAuthEnum {
   Authing = 0,
   Authed = 1,
@@ -13,19 +11,19 @@ export enum UserStatusEnum {
 }
 
 export type UserListParams = {
-  authStatus?: UserAuthEnum
+  authStatus?: UserAuthEnum & SelectOptions
   phone?: string
-  role?: UserRolesEnum
+  role?: UserRolesEnum & SelectOptions
   userName?: string
 }
 
 export type UserlistDTO = {
-  authStatus: UserAuthEnum
+  authStatus: UserAuthEnum & SelectOptions
   createTime: string
   id: string
   phone: string
-  role: UserRolesEnum
-  userStatus: UserStatusEnum
+  role: UserRolesEnum & SelectOptions
+  userStatus: UserStatusEnum & SelectOptions
   username: string
 }
 

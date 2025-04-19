@@ -3,7 +3,11 @@ import Grid from '@/Components/Grid/index.vue'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
 import { formatPhone } from '@/utils/helper'
-const userGridRef = ref<InstanceType<typeof Grid>>()
+import { GridExpose } from '@/Components/Grid/gridType'
+import { UserPostListResponse, UserPostParams } from '@/api/types/userCotent'
+import userPostApi from '@/api/userContent'
+import { PageParams } from '@/api/types/common'
+const contentGridRef = ref<GridExpose<UserPostListResponse, UserPostParams>>()
 
 const emit = defineEmits(['viewDialog', 'statusChange'])
 
@@ -17,48 +21,50 @@ const getStatusType = (status: string) => {
   return statusMap[status] || 'info'
 }
 
-const loadData = (params: any) => {
-  // if (userGridRef.value) {
-  //   userGridRef.value.loadData?.({})
-  // }
-  console.log('loadData', params)
-  return Promise.resolve({
-    data: [
-      {
-        id: 3,
-        name: '王五',
-        phone: '13412349872',
-        role: '程序员',
-        category: '一级分类名',
-        createTime: '2025.01.08 12:23:45',
-        status: '已驳回'
-      },
-      {
-        id: 2,
-        name: '李四',
-        phone: '13412349874',
-        role: '程序员',
-        category: '一级分类名',
-        createTime: '2025.01.05 12:23:45',
-        status: '已发布'
-      },
-      {
-        id: 1,
-        name: '张三',
-        phone: '18812342349',
-        role: '大学生',
-        category: '一级分类名',
-        createTime: '2025.01.02 12:23:45',
-        status: '未审核'
-      }
-    ],
-    total: 3
-  })
+const loadData = async (params: UserPostParams & PageParams) => {
+  const res = await userPostApi.fetchUserPostList(params)
+  return {
+    data: res.data.list,
+    total: res.data.total
+  }
+  // console.log('loadData', params)
+  // return Promise.resolve({
+  //   data: [
+  //     {
+  //       id: 3,
+  //       name: '王五',
+  //       phone: '13412349872',
+  //       role: '程序员',
+  //       category: '一级分类名',
+  //       createTime: '2025.01.08 12:23:45',
+  //       status: '已驳回'
+  //     },
+  //     {
+  //       id: 2,
+  //       name: '李四',
+  //       phone: '13412349874',
+  //       role: '程序员',
+  //       category: '一级分类名',
+  //       createTime: '2025.01.05 12:23:45',
+  //       status: '已发布'
+  //     },
+  //     {
+  //       id: 1,
+  //       name: '张三',
+  //       phone: '18812342349',
+  //       role: '大学生',
+  //       category: '一级分类名',
+  //       createTime: '2025.01.02 12:23:45',
+  //       status: '未审核'
+  //     }
+  //   ],
+  //   total: 3
+  // })
 }
 
 const load = (params?: any) => {
-  if (userGridRef.value) {
-    userGridRef.value.loadData?.(params)
+  if (contentGridRef.value) {
+    contentGridRef.value.loadData?.(params)
   }
 }
 
@@ -67,7 +73,7 @@ onMounted(() => {
 })
 
 defineExpose({
-  loadData
+  load
 })
 </script>
 <template>
@@ -81,7 +87,7 @@ defineExpose({
       width="80"
     />
     <el-table-column
-      prop="name"
+      prop="username"
       label="用户名"
       width="120"
     />
@@ -104,7 +110,7 @@ defineExpose({
       width="120"
     />
     <el-table-column
-      prop="createTime"
+      prop="reviewTime"
       label="提交时间"
       width="180"
     />

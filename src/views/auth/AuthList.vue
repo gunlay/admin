@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import { PageParams } from '@/api/types/common'
+import { UserAuthlistDTO, UserAuthParams } from '@/api/types/userAuth'
+import userAuthApi from '@/api/userAuth'
+import { GridExpose } from '@/Components/Grid/gridType'
 import Grid from '@/Components/Grid/index.vue'
 import { formatPhone } from '@/utils/helper'
 import { defineEmits, onMounted, ref } from 'vue'
 
 const emit = defineEmits(['view'])
-const authGridRef = ref<InstanceType<typeof Grid>>()
+const authGridRef = ref<GridExpose<UserAuthlistDTO, UserAuthParams>>()
 
 // 获取状态标签类型
 const getStatusType = (status: string) => {
@@ -16,42 +20,44 @@ const getStatusType = (status: string) => {
   return (statusMap[status] || 'info') as 'success' | 'warning' | 'danger' | 'info' | 'primary'
 }
 
-const loadData = (params: any) => {
-  // if (userGridRef.value) {
-  //   userGridRef.value.loadData?.({})
-  // }
-  return Promise.resolve({
-    data: [
-      {
-        id: 3,
-        name: '王五',
-        phone: '13412349872',
-        authType: '技能认证',
-        status: '已拒绝',
-        authTime: '2025.01.08 12:23:45',
-        createTime: '2025.01.01 12:00:00' // 添加提交时间
-      },
-      {
-        id: 2,
-        name: '李四',
-        phone: '13412349874',
-        authType: '技能认证',
-        status: '未审核',
-        authTime: '-----',
-        createTime: '2025.01.01 12:00:00' // 添加提交时间
-      },
-      {
-        id: 1,
-        name: '张三',
-        phone: '18812342349',
-        authType: '工作认证',
-        status: '已通过',
-        authTime: '2025.01.02 12:23:45',
-        createTime: '2025.01.01 12:00:00' // 添加提交时间
-      }
-    ],
-    total: 3
-  })
+const loadData = async (params: UserAuthParams & PageParams) => {
+  const res = await userAuthApi.fetchUserAuthList(params)
+  return {
+    data: res.data.list,
+    total: res.data.total
+  }
+  // return Promise.resolve({
+  //   data: [
+  //     {
+  //       id: 3,
+  //       name: '王五',
+  //       phone: '13412349872',
+  //       authType: '技能认证',
+  //       status: '已拒绝',
+  //       authTime: '2025.01.08 12:23:45',
+  //       createTime: '2025.01.01 12:00:00' // 添加提交时间
+  //     },
+  //     {
+  //       id: 2,
+  //       name: '李四',
+  //       phone: '13412349874',
+  //       authType: '技能认证',
+  //       status: '未审核',
+  //       authTime: '-----',
+  //       createTime: '2025.01.01 12:00:00' // 添加提交时间
+  //     },
+  //     {
+  //       id: 1,
+  //       name: '张三',
+  //       phone: '18812342349',
+  //       authType: '工作认证',
+  //       status: '已通过',
+  //       authTime: '2025.01.02 12:23:45',
+  //       createTime: '2025.01.01 12:00:00' // 添加提交时间
+  //     }
+  //   ],
+  //   total: 3
+  // })
 }
 
 const load = (params?: any) => {
@@ -65,7 +71,7 @@ onMounted(() => {
 })
 
 defineExpose({
-  loadData
+  load
 })
 </script>
 <template>
@@ -115,7 +121,7 @@ defineExpose({
       </template>
     </el-table-column>
     <el-table-column
-      prop="authTime"
+      prop="reviewTime"
       label="审核时间"
       width="180"
     />

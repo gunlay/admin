@@ -1,28 +1,34 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
+import { UserPostParams } from '@/api/types/userCotent'
+import { SelectOptions } from '@/api/types/common'
+import { UserPubStatusList, UserRoleList } from './const'
 
 const emit = defineEmits(['search'])
 
-const searchForm = reactive({
-  username: '',
+const searchForm = reactive<UserPostParams>({
+  userName: '',
   phone: '',
-  role: '全部',
-  status: '全部'
+  role: undefined,
+  pubStatus: undefined
 })
 // 修改查询功能，保持排序和分页
 const handleSearch = () => {
-  emit('search', searchForm)
+  emit('search', {
+    ...searchForm,
+    role: searchForm.role === SelectOptions.ALLOPTIONS ? undefined : searchForm.role,
+    pubStatus: searchForm.pubStatus === SelectOptions.ALLOPTIONS ? undefined : searchForm.pubStatus
+  })
 }
 
 // 修改重置功能
 const handleReset = () => {
   // 重置表单
-  searchForm.username = ''
+  searchForm.userName = ''
   searchForm.phone = ''
-  searchForm.role = '全部'
-  searchForm.status = '全部'
+  searchForm.role = undefined
+  searchForm.pubStatus = undefined
   emit('search', searchForm)
-  ElMessage.success('重置成功')
 }
 </script>
 <template>
@@ -32,7 +38,7 @@ const handleReset = () => {
   >
     <el-form-item label="用户名">
       <el-input
-        v-model="searchForm.username"
+        v-model="searchForm.userName"
         placeholder="请输入用户名"
       />
     </el-form-item>
@@ -49,38 +55,30 @@ const handleReset = () => {
       >
         <el-option
           label="全部"
-          value="全部"
+          :value="SelectOptions.ALLOPTIONS"
         />
         <el-option
-          label="大学生"
-          value="大学生"
-        />
-        <el-option
-          label="程序员"
-          value="程序员"
+          v-for="item in UserRoleList"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
         />
       </el-select>
     </el-form-item>
     <el-form-item label="发布状态">
       <el-select
-        v-model="searchForm.status"
+        v-model="searchForm.pubStatus"
         placeholder="请选择状态"
       >
         <el-option
           label="全部"
-          value="全部"
+          :value="SelectOptions.ALLOPTIONS"
         />
         <el-option
-          label="未审核"
-          value="未审核"
-        />
-        <el-option
-          label="已发布"
-          value="已发布"
-        />
-        <el-option
-          label="已驳回"
-          value="已驳回"
+          v-for="item in UserPubStatusList"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
         />
       </el-select>
     </el-form-item>

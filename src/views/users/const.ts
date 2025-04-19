@@ -1,4 +1,5 @@
-import { UserAuthEnum, UserRolesEnum, UserStatusEnum } from '@/api/types/userManagement'
+import { UserRolesEnum } from '@/api/types/common'
+import { UserAuthEnum, UserStatusEnum } from '@/api/types/userManagement'
 
 export const UserRoleList = [
   {
@@ -32,13 +33,15 @@ export const UserStatusList = [
   {
     label: '正常',
     value: UserStatusEnum.Normal,
-    type: 'danger',
+    tagType: 'success',
+    actionType: 'danger',
     action: '禁用'
   },
   {
     label: '已封禁',
     value: UserStatusEnum.Banned,
-    type: 'success',
+    tagType: 'danger',
+    actionType: 'success',
     action: '启用'
   }
 ]

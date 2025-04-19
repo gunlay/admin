@@ -20,16 +20,17 @@ import { ref } from 'vue'
 import AuthDialog from './AuthDialog.vue'
 import AuthList from './AuthList.vue'
 import AuthQuery from './AuthQuery.vue'
+import { UserAuthlistDTO, UserAuthParams } from '@/api/types/userAuth'
 
 const authListRef = ref<InstanceType<typeof AuthList>>()
 const authDialogRef = ref<InstanceType<typeof AuthDialog>>()
 
-const handleSearch = (searchForm: any) => {
-  authListRef.value?.loadData(searchForm)
+const handleSearch = (searchForm: UserAuthParams) => {
+  authListRef.value?.load(searchForm)
 }
 
 // 查看详情
-const handleView = (row: any) => {
+const handleView = (row: UserAuthlistDTO) => {
   if (authDialogRef.value) {
     authDialogRef.value.showDialog(row)
   }

@@ -19,39 +19,6 @@ const loadData = async (params: UserListParams & PageParams) => {
     data: res.data.list,
     total: res.data.total
   }
-  // console.log('loadData', res)
-  // return Promise.resolve({
-  //   data: [
-  //     {
-  //       id: 3,
-  //       name: '王五',
-  //       phone: '13412349872',
-  //       role: '程序员',
-  //       createTime: '2025.01.08 12:23:45',
-  //       authStatus: '未认证',
-  //       status: '已注销'
-  //     },
-  //     {
-  //       id: 2,
-  //       name: '李四',
-  //       phone: '13412349874',
-  //       role: '程序员',
-  //       createTime: '2025.01.05 12:23:45',
-  //       authStatus: '已认证',
-  //       status: '已封禁 剩余30天'
-  //     },
-  //     {
-  //       id: 1,
-  //       name: '张三',
-  //       phone: '18812342349',
-  //       role: '大学生',
-  //       createTime: '2025.01.02 12:23:45',
-  //       authStatus: '',
-  //       status: '正常'
-  //     }
-  //   ],
-  //   total: 3
-  // })
 }
 
 const load = (params?: UserListParams) => {
@@ -124,7 +91,7 @@ defineExpose({
       <template #default="scope">
         <el-tag
           :type="
-            UserStatusList.find(item => item.value === scope.row.userStatus)?.type || 'success'
+            UserStatusList.find(item => item.value === scope.row.userStatus)?.tagType || 'success'
           "
         >
           {{ UserStatusList.find(item => item.value === scope.row.userStatus)?.label || '—' }}
@@ -144,7 +111,8 @@ defineExpose({
         >
         <el-button
           :type="
-            UserStatusList.find(item => item.value === scope.row.userStatus)?.type || 'success'
+            UserStatusList.find(item => item.value === scope.row.userStatus)?.actionType ||
+            'success'
           "
           size="small"
           @click="emit('statusChange', scope.row)"
