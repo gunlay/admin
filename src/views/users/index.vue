@@ -54,6 +54,10 @@ const handleStatusChange = async (row: UserlistDTO) => {
       1: UserStatusEnum.Normal
     }[row.userStatus]
   })
+  row.userStatus = {
+    0: UserStatusEnum.Banned,
+    1: UserStatusEnum.Normal
+  }[row.userStatus]
   ElMessage.success(`${action}成功`)
 }
 </script>

@@ -7,19 +7,10 @@ import { GridExpose } from '@/Components/Grid/gridType'
 import { UserPostListResponse, UserPostParams } from '@/api/types/userCotent'
 import userPostApi from '@/api/userContent'
 import { PageParams } from '@/api/types/common'
+import { UserPubStatusList, UserRoleList } from './const'
 const contentGridRef = ref<GridExpose<UserPostListResponse, UserPostParams>>()
 
 const emit = defineEmits(['viewDialog', 'statusChange'])
-
-// 获取状态标签类型
-const getStatusType = (status: string) => {
-  const statusMap: Record<string, string> = {
-    未审核: 'warning',
-    已发布: 'success',
-    已驳回: 'danger'
-  }
-  return statusMap[status] || 'info'
-}
 
 const loadData = async (params: UserPostParams & PageParams) => {
   const res = await userPostApi.fetchUserPostList(params)
@@ -27,39 +18,6 @@ const loadData = async (params: UserPostParams & PageParams) => {
     data: res.data.list,
     total: res.data.total
   }
-  // console.log('loadData', params)
-  // return Promise.resolve({
-  //   data: [
-  //     {
-  //       id: 3,
-  //       name: '王五',
-  //       phone: '13412349872',
-  //       role: '程序员',
-  //       category: '一级分类名',
-  //       createTime: '2025.01.08 12:23:45',
-  //       status: '已驳回'
-  //     },
-  //     {
-  //       id: 2,
-  //       name: '李四',
-  //       phone: '13412349874',
-  //       role: '程序员',
-  //       category: '一级分类名',
-  //       createTime: '2025.01.05 12:23:45',
-  //       status: '已发布'
-  //     },
-  //     {
-  //       id: 1,
-  //       name: '张三',
-  //       phone: '18812342349',
-  //       role: '大学生',
-  //       category: '一级分类名',
-  //       createTime: '2025.01.02 12:23:45',
-  //       status: '未审核'
-  //     }
-  //   ],
-  //   total: 3
-  // })
 }
 
 const load = (params?: any) => {
@@ -103,14 +61,18 @@ defineExpose({
       prop="role"
       label="用户角色"
       width="100"
-    />
-    <el-table-column
+    >
+      <template #default="scope">
+        {{ UserRoleList.find(item => item.value === scope.row.role)?.label }}
+      </template>
+    </el-table-column>
+    <!-- <el-table-column
       prop="category"
       label="所属分类"
       width="120"
-    />
+    /> -->
     <el-table-column
-      prop="reviewTime"
+      prop="createTime"
       label="提交时间"
       width="180"
     />
@@ -119,8 +81,8 @@ defineExpose({
       width="100"
     >
       <template #default="scope">
-        <el-tag :type="getStatusType(scope.row.status)">
-          {{ scope.row.status }}
+        <el-tag :type="UserPubStatusList.find(item => item.value === scope.row.pubStatus)?.type">
+          {{ UserPubStatusList.find(item => item.value === scope.row.pubStatus)?.label }}
         </el-tag>
       </template>
     </el-table-column>
@@ -129,7 +91,7 @@ defineExpose({
       width="180"
     >
       <template #default="scope">
-        {{ scope.row.auditTime || '2025.01.08 12:23:45' }}
+        {{ scope.row.reviewTime }}
       </template>
     </el-table-column>
     <el-table-column

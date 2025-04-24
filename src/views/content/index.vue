@@ -16,17 +16,21 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { UserPostParams } from '@/api/types/userCotent'
+import { UserPostlistDTO, UserPostParams } from '@/api/types/userCotent'
 import ContentList from './ContentList.vue'
 import ContentQuery from './ContentQuery.vue'
 import ContentDialog from './ContentDialog.vue'
+import userPostApi from '@/api/userContent'
 
 const contentListRef = ref<InstanceType<typeof ContentList>>()
 const contentDialogRef = ref<InstanceType<typeof ContentDialog>>()
 
 // 查看详情
-const handleView = (row: any) => {
-  if (contentDialogRef.value) contentDialogRef.value.showDialog(row)
+const handleView = async (row: UserPostlistDTO) => {
+  if (contentDialogRef.value) {
+    const res = await userPostApi.fetchUserPostDetail({ id: row.id })
+    contentDialogRef.value.showDialog(res.data)
+  }
 }
 
 // 修改查询功能，保持排序和分页

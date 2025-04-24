@@ -21,7 +21,7 @@ import AuthDialog from './AuthDialog.vue'
 import AuthList from './AuthList.vue'
 import AuthQuery from './AuthQuery.vue'
 import { UserAuthlistDTO, UserAuthParams } from '@/api/types/userAuth'
-
+import userAuthApi from '@/api/userAuth'
 const authListRef = ref<InstanceType<typeof AuthList>>()
 const authDialogRef = ref<InstanceType<typeof AuthDialog>>()
 
@@ -30,9 +30,10 @@ const handleSearch = (searchForm: UserAuthParams) => {
 }
 
 // 查看详情
-const handleView = (row: UserAuthlistDTO) => {
+const handleView = async (row: UserAuthlistDTO) => {
   if (authDialogRef.value) {
-    authDialogRef.value.showDialog(row)
+    const res = await userAuthApi.fetchUserAuthDetail({ userId: row.id })
+    authDialogRef.value.showDialog(res.data)
   }
 }
 </script>
