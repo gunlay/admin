@@ -9,7 +9,7 @@
             </div>
           </template>
           <div class="card-content">
-            <h2>1,234</h2>
+            <h2>-----</h2>
           </div>
         </el-card>
       </el-col>
@@ -22,7 +22,7 @@
             </div>
           </template>
           <div class="card-content">
-            <h2>256</h2>
+            <h2>-----</h2>
           </div>
         </el-card>
       </el-col>
@@ -35,7 +35,7 @@
             </div>
           </template>
           <div class="card-content">
-            <h2>892</h2>
+            <h2>-----</h2>
           </div>
         </el-card>
       </el-col>
@@ -48,7 +48,7 @@
             </div>
           </template>
           <div class="card-content">
-            <h2>￥45,678</h2>
+            <h2>-----</h2>
           </div>
         </el-card>
       </el-col>

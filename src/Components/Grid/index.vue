@@ -13,6 +13,7 @@
         show-overflow-tooltip
         stripe
         highlight-current-row
+        v-loading="searching"
         style="width: 100%; margin-bottom: 12px"
         @selection-change="handleSelectionChange"
         @sort-change="handleSortChange"

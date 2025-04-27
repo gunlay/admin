@@ -2,7 +2,10 @@
   <div class="content-container">
     <el-card>
       <template #header>
-        <ContentQuery @search="handleSearch" />
+        <ContentQuery
+          ref="contentQueryRef"
+          @search="handleSearch"
+        />
       </template>
     </el-card>
     <ContentList
@@ -10,7 +13,10 @@
       @viewDialog="handleView"
     />
     <!-- 查看详情对话框 -->
-    <ContentDialog ref="contentDialogRef" />
+    <ContentDialog
+      ref="contentDialogRef"
+      @updateList="handleUpdateList"
+    />
   </div>
 </template>
 
@@ -23,6 +29,7 @@ import ContentDialog from './ContentDialog.vue'
 import userPostApi from '@/api/userContent'
 
 const contentListRef = ref<InstanceType<typeof ContentList>>()
+const contentQueryRef = ref<InstanceType<typeof ContentQuery>>()
 const contentDialogRef = ref<InstanceType<typeof ContentDialog>>()
 
 // 查看详情
@@ -36,6 +43,11 @@ const handleView = async (row: UserPostlistDTO) => {
 // 修改查询功能，保持排序和分页
 const handleSearch = (params: UserPostParams) => {
   if (contentListRef.value) contentListRef.value.load(params)
+}
+
+// 更新列表
+const handleUpdateList = () => {
+  if (contentQueryRef.value) contentQueryRef.value.handleSearch()
 }
 </script>
 

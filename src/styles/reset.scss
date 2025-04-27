@@ -37,3 +37,8 @@
     border-color: transparent !important;
   }
 }
+
+// el-form-item 标签加粗
+.el-form-item__label {
+  font-weight: bold !important;
+}

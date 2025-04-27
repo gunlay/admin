@@ -31,6 +31,9 @@ const handleReset = () => {
   searchForm.authStatus = undefined
   emit('search', searchForm)
 }
+defineExpose({
+  handleSearch: handleSearch
+})
 </script>
 <template>
   <el-form

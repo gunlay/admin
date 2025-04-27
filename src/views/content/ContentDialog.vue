@@ -9,7 +9,7 @@ import { ElMessageBox, ElMessage } from 'element-plus'
 import { Download, Document, Picture, Files } from '@element-plus/icons-vue'
 import userPostApi from '@/api/userContent'
 
-const emit = defineEmits(['update:dialogVisible'])
+const emit = defineEmits(['update:dialogVisible', 'updateList'])
 const dialogVisible = ref(false)
 
 const formData = reactive<UserPostDetail>({} as UserPostDetail)
@@ -56,7 +56,7 @@ const handleAudit = (action: UserPubStatusEnum.Pubed | UserPubStatusEnum.PubDeni
     })
     // 更新状态映射
     formData.status = action
-
+    emit('updateList')
     ElMessage.success(`审核${actionText}成功`)
     dialogVisible.value = false
   })
