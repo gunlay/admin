@@ -6,8 +6,13 @@ export enum UserPubStatusEnum {
   PubDenied = 2
 }
 
+export enum UserPubServiceType {
+  Online = 0,
+  Offline = 1
+}
+
 export type UserPostParams = {
-  pubStatus?: UserPubStatusEnum & SelectOptions
+  authStatus?: UserPubStatusEnum & SelectOptions
   phone?: string
   role?: UserRolesEnum & SelectOptions
   userName?: string
@@ -31,10 +36,15 @@ export type UserPostListResponse = {
 export type UserPostDetail = {
   content: string
   createTime: string
+  deliveryCycle: number
   id: number
+  image: string
+  postFile: string
   price: number
+  restTime: string
+  serviceType: UserPubServiceType
   status: number
-  timeEinmal: number
   title: string
-  userId: string
+  userId: number
+  workTime: string
 }

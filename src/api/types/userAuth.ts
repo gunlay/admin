@@ -27,6 +27,16 @@ export type UserAuthlistDTO = {
   username: string
 }
 
+export type UserAuthDetailDTO = {
+  authImage: string
+  content: string
+  createTime: string
+  id: number
+  status: UserAuthEnum
+  type: UserAuthorizationEnum
+  userId: number
+}
+
 export type UserListResponse = {
   list: UserAuthlistDTO[]
   total: number

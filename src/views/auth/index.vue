@@ -32,7 +32,7 @@ const handleSearch = (searchForm: UserAuthParams) => {
 // 查看详情
 const handleView = async (row: UserAuthlistDTO) => {
   if (authDialogRef.value) {
-    const res = await userAuthApi.fetchUserAuthDetail({ userId: row.id })
+    const res = await userAuthApi.fetchUserAuthDetail({ id: row.id })
     authDialogRef.value.showDialog(res.data)
   }
 }

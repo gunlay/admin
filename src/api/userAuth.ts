@@ -1,6 +1,6 @@
 import request from '@/const/request'
 import { PageParams } from './types/common'
-import { UserAuthlistDTO, UserAuthParams } from './types/userAuth'
+import { UserAuthDetailDTO, UserAuthlistDTO, UserAuthParams } from './types/userAuth'
 
 export const userAuthApi = {
   fetchUserAuthList: async (params: UserAuthParams & PageParams) => {
@@ -11,8 +11,8 @@ export const userAuthApi = {
       }>('codePlatform/user/auth/page', params)
       .then(res => res)
   },
-  fetchUserAuthDetail: async (params: { userId: string }) => {
-    return request.post<UserAuthlistDTO>('codePlatform/user/auth/detail', params).then(res => res)
+  fetchUserAuthDetail: async (params: { id: string }) => {
+    return request.get<UserAuthDetailDTO>('codePlatform/user/auth/detail', params).then(res => res)
   }
 }
 export default userAuthApi

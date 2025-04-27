@@ -10,14 +10,15 @@ const searchForm = reactive<UserPostParams>({
   userName: '',
   phone: '',
   role: undefined,
-  pubStatus: undefined
+  authStatus: undefined
 })
 // 修改查询功能，保持排序和分页
 const handleSearch = () => {
   emit('search', {
     ...searchForm,
     role: searchForm.role === SelectOptions.ALLOPTIONS ? undefined : searchForm.role,
-    pubStatus: searchForm.pubStatus === SelectOptions.ALLOPTIONS ? undefined : searchForm.pubStatus
+    authStatus:
+      searchForm.authStatus === SelectOptions.ALLOPTIONS ? undefined : searchForm.authStatus
   })
 }
 
@@ -27,7 +28,7 @@ const handleReset = () => {
   searchForm.userName = ''
   searchForm.phone = ''
   searchForm.role = undefined
-  searchForm.pubStatus = undefined
+  searchForm.authStatus = undefined
   emit('search', searchForm)
 }
 </script>
@@ -67,7 +68,7 @@ const handleReset = () => {
     </el-form-item>
     <el-form-item label="发布状态">
       <el-select
-        v-model="searchForm.pubStatus"
+        v-model="searchForm.authStatus"
         placeholder="请选择状态"
       >
         <el-option

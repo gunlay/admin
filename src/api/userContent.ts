@@ -17,9 +17,9 @@ export const userPostApi = {
       .then(res => res)
   },
   fetchUserPostDetail: async (params: { id: string }) => {
-    return request.post<UserPostDetail>('codePlatform/user/post/info', params).then(res => res)
+    return request.get<UserPostDetail>('codePlatform/user/post/info', params).then(res => res)
   },
-  reviewUserPost: async (params: { id: string; status: UserPubStatusEnum }) => {
+  reviewUserPost: async (params: { id: number; status: UserPubStatusEnum }) => {
     return request.post<boolean>('codePlatform/user/post/review', params).then(res => res)
   }
 }

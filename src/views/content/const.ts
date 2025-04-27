@@ -1,6 +1,6 @@
 import { UserRolesEnum } from '@/api/types/common'
 
-import { UserPubStatusEnum } from '@/api/types/userCotent'
+import { UserPubServiceType, UserPubStatusEnum } from '@/api/types/userCotent'
 
 export const UserPubStatusList = [
   {
@@ -27,5 +27,16 @@ export const UserRoleList = [
   {
     label: '程序员',
     value: UserRolesEnum.Programmer
+  }
+]
+
+export const UserPubServiceTypeList = [
+  {
+    label: '线上',
+    value: UserPubServiceType.Online
+  },
+  {
+    label: '线下',
+    value: UserPubServiceType.Offline
   }
 ]
